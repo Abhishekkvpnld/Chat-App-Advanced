@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Avatar, Button, Container, IconButton, Paper, Stack, TextField, Typography } from "@mui/material";
 import { CameraAlt } from "@mui/icons-material";
-import { VisuallyHiddenInput } from '../components/StyledComponents';
-import {useInputValidation} from "6pp"
+import { VisuallyHiddenInput } from '../components/styles/StyledComponents';
+import {useFileHandler, useInputValidation,useStrongPassword} from "6pp";
+import { usernameValidators } from '../utils/Validators';
 
 const Login = () => {
 
@@ -10,10 +11,20 @@ const Login = () => {
 
     const toggleLogin = () => setIsLogin((prev) => !prev); 
 
-    const Name = useInputValidation('');
-    const Username = useInputValidation('');
-    const Bio = useInputValidation('');
-    const Password = useInputValidation('')
+    const name = useInputValidation('');
+    const username = useInputValidation('',usernameValidators);
+    const bio = useInputValidation('');
+    const password = useStrongPassword('')
+
+    const avatar = useFileHandler("single");
+
+    const handleSignup = (e)=>{
+        e.preventDefault();
+    }
+
+const handleLogin = (e)=>{
+    e.preventDefault(); 
+}
 
     return (
 
@@ -33,10 +44,10 @@ const Login = () => {
                         <>
                             <Typography variant='h5'>Login</Typography>
 
-                            <form style={{ width: '100%', marginTop: "1rem" }}>
+                            <form style={{ width: '100%', marginTop: "1rem" }} onSubmit={handleLogin}>
 
-                                <TextField required fullWidth label="Username" margin='normal' variant='outlined' value={Username.value} onChange={Username.changeHandler} />
-                                <TextField required fullWidth label="Password" type='password' margin='normal' variant='outlined' value={Password.value} onChange={Password.changeHandler} />
+                                <TextField required fullWidth label="Username" margin='normal' variant='outlined' value={username.value} onChange={username.changeHandler} />
+                                <TextField required fullWidth label="Password" type='password' margin='normal' variant='outlined' value={password.value} onChange={password.changeHandler} />
 
                                 <Button variant='contained' color='primary' type='submit' fullWidth sx={{ marginTop: "1rem" }}>Login</Button>
 
@@ -52,10 +63,11 @@ const Login = () => {
                         <>
                             <Typography variant='h5'>Sign Up</Typography>
 
-                            <form style={{ width: '100%', marginTop: "1rem" }}>
+                            <form style={{ width: '100%', marginTop: "1rem" }} onSubmit={handleSignup}>
 
                                 <Stack position={"relative"} width={"10rem"} margin={"auto"}>
-                                    <Avatar sx={{ width: "10rem", height: "10rem", objectFit: "contain" }} />
+                                    <Avatar sx={{ width: "10rem", height: "10rem", objectFit: "contain" }} src={avatar.preview}/>
+
 
                                     <IconButton sx={{
                                                 position: "absolute",
@@ -69,16 +81,45 @@ const Login = () => {
                                             }} component='label'>
                                         <>
                                             <CameraAlt />
-                                            <VisuallyHiddenInput type='file' />
+                                            <VisuallyHiddenInput type='file' onChange={avatar.changeHandler}/>
                                         </>
                                     </IconButton>
 
                                 </Stack>
 
-                                <TextField required fullWidth label="Name" margin='normal' variant='outlined' value={Name.value} onChange={Name.changeHandler} />
-                                <TextField required fullWidth label="Bio" margin='normal' variant='outlined' value={Bio.value} onChange={Bio.changeHandler} />
-                                <TextField required fullWidth label="Username" margin='normal' variant='outlined'value={Username.value} onChange={Name.changeHandler} />
-                                <TextField required fullWidth label="Password" type='password' margin='normal' variant='outlined' value={Password.value} onChange={Password.changeHandler} />
+                                {
+avatar.error && (
+    <Typography variant='caption' color={"error"} m={"1rem auto"} width={"fit-content"} display={"block"}>
+        {
+            avatar.error
+        }
+    </Typography>
+)
+}
+
+                                <TextField required fullWidth label="Name" margin='normal' variant='outlined' value={name.value} onChange={name.changeHandler} />
+                                <TextField required fullWidth label="Bio" margin='normal' variant='outlined' value={bio.value} onChange={bio.changeHandler} />
+                                <TextField required fullWidth label="Username" margin='normal' variant='outlined'value={username.value} onChange={username.changeHandler} />
+
+                                {
+                                    username.error && (
+                                        <Typography variant='caption' color="error">
+                                            {username.error}
+                                        </Typography>
+                                    )
+                                }
+
+                                <TextField required fullWidth label="Password" type='password' margin='normal' variant='outlined' value={password.value} onChange={password.changeHandler} />
+
+                                {
+                                    password.error && (
+                                        <Typography color={"error"} variant='caption'>
+                                            {
+                                                password.error
+                                            }
+                                        </Typography>
+                                    )
+                                }
 
                                 <Button variant='contained' color='primary' type='submit' fullWidth sx={{ marginTop: "1rem" }}>Sign Up </Button>
 
