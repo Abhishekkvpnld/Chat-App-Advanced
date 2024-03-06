@@ -1,4 +1,4 @@
-import { AppBar, Box, IconButton, Toolbar, Tooltip, Typography } from '@mui/material';
+import { AppBar, Backdrop, Box, IconButton, Toolbar, Tooltip, Typography } from '@mui/material';
 import { orange } from "../../constants/color";
 import React, { Suspense, lazy, useState } from 'react';
 import { Menu as MenuIcon, Search as SearchIcon, Add as AddIcon, Group as GroupIcon,Logout as LogoutIcon,Notifications as NotificationIcon } from "@mui/icons-material";
@@ -85,19 +85,19 @@ console.log('logout');
             </Box>
 
 { isSearch && (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<Backdrop open />}>
         <Search/>
     </Suspense>
 ) }
 
 { isNotification && (
-    <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Backdrop open />}>
         <Notification/>
     </Suspense>
 ) }
 
 { isNewGroup && (
-    <Suspense fallback={<div>Loading...</div>}>
+       <Suspense fallback={<Backdrop open />}>   
         <NewGroup/>
     </Suspense>
 ) }
