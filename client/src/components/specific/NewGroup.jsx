@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SampleUsers } from "../../constants/SampleChat";
 import UserItem from '../shared/userItem';
 import { Button, Dialog, DialogTitle, Stack, TextField, Typography } from '@mui/material';
@@ -12,18 +12,14 @@ const NewGroup = () => {
   const [members, setMembers] = useState(SampleUsers)
   const [selectedMembers, setSelectedMembers] = useState([])
 
-  const selectMemberHandler = (id) => {
-    //select members
 
-    // setMembers((prev)=>prev.map((user)=>user._id === id ? {...user,isAdded:!user.isAdded} : user ))
+  const selectMemberHandler = (id) => {
 
     setSelectedMembers((prev) => prev.includes(id) ?
-      // prev.filter((currentElement) => currentElement !== id) 
-      ''
+      prev.filter((currentElement) => currentElement !== id)
       :
       [...prev, id]
     )
-
     console.log(selectedMembers);
 
   }
@@ -43,7 +39,6 @@ const NewGroup = () => {
         <DialogTitle textAlign={"center"} variant='h4'>New Group</DialogTitle>
 
         <TextField label="Group Name" value={groupName.value} onChange={groupName.changeHandler} />
-
         <Typography variant='body1'>Members</Typography>
 
         <Stack>
