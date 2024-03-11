@@ -48,3 +48,38 @@ export const SampleNotifications = [
       
     },
 ]
+
+export const SampleMessages = [
+    {
+        attachments:[
+            {
+                public_id:"32489240",
+                url:"https://cdn.vectorstock.com/i/preview-1x/17/61/male-avatar-profile-picture-vector-10211761.jpg"
+            }
+        ],
+        content:"my message",
+        _id:"64242042hkjwhr4273",
+        sender:{
+            _id:"user_id",
+            name:"abhi"
+        },
+        chat:"chatId",
+        createdAt:"2024-02-12T10:41:30.630Z"
+    },
+    {
+        attachments:[
+            {
+                public_id:"324892402",
+                url:"https://cdn.vectorstock.com/i/preview-1x/17/61/male-avatar-profile-picture-vector-10211761.jpg"
+            }
+        ],
+        content:"my message",
+        _id:"64242042hkjwhr4273",
+        sender:{
+            _id:"1234566",
+            name:"abhi 2"
+        },
+        chat:"chatId",
+        createdAt:"2024-02-12T10:41:30.630Z"
+    },
+];
