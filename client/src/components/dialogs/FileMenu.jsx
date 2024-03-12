@@ -1,12 +1,12 @@
 import React from 'react';
-import {Menu} from "@mui/material";
+import { Menu } from "@mui/material";
 
-const FileMenu = ({anchorE1}) => {
+const FileMenu = ({ anchorE1 }) => {
   return (
-    <Menu anchorEl={anchorE1}>
-        <div style={{width:"10rem"}}>
+    <Menu anchorEl={anchorE1} open={false}>
+      <div style={{ width: "10rem" }}>
         dssaddafhusdddddddddddddsdfhksfaa;pWOERWEHOI''rfejfFjfflf'
-        </div>
+      </div>
 
     </Menu>
   )
