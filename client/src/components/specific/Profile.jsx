@@ -18,7 +18,7 @@ const Profile = () => {
                 }}
             />
             <ProfiileCard heading={"Bio"} text={"dfjsfkfsfs sfdlslfsf"} />
-            <ProfiileCard heading={"Username"} text={"meAbhi"} Icon={<UsernameIcon/>}/>
+            <ProfiileCard heading={"Username"} text={"Abhi"} Icon={<UsernameIcon/>}/>
             <ProfiileCard heading={"Name"} text={"Abhishek"} Icon={<FaceIcon/>} />
             <ProfiileCard heading={"Joined"} text={moment('2024-01-09T18:30:00.000Z').fromNow()} Icon={<CalendarIcon/>}/>
         </Stack>
