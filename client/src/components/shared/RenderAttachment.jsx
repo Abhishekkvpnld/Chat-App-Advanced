@@ -3,6 +3,7 @@ import { transformImage } from '../../lib/Features';
 import { FileOpen as FileOpenIcon } from "@mui/icons-material";
 
 const RenderAttachment = (file, url) => {
+
     switch (file) {
         case "video":
             return <video src={url} controls width={"200px"} preload='none' />

@@ -9,7 +9,7 @@ const MessageComponent = ({ message, user }) => {
 
     const { sender, content, attachments = [], createdAt } = message;
     const sameSender = sender?._id === user?._id;
-console.log(attachments);
+    console.log(attachments);
     const timeAgo = moment(createdAt).fromNow()
 
     return (
@@ -36,19 +36,20 @@ console.log(attachments);
 
 
             {
-                attachments > 0 && (
+                // attachments > 0 && 
+                (
                     attachments.map((attachment, index) => {
                         const url = attachment.url;
                         const file = fileFormat(url);
-                        return <Box>
-                            <a href=""
+                        return (<Box key={index}>
+                            <a href={url}
                                 download
                                 target='_blank'
                                 style={{ color: "black" }}
                             >
                                 {RenderAttachment(file, url)}
                             </a>
-                        </Box>
+                        </Box>)
                     })
                 )
             }

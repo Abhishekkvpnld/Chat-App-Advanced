@@ -51,12 +51,7 @@ export const SampleNotifications = [
 
 export const SampleMessages = [
     {
-        attachments:[
-            {
-                public_id:"32489240",
-                url:"https://cdn.vectorstock.com/i/preview-1x/17/61/male-avatar-profile-picture-vector-10211761.jpg"
-            }
-        ],
+     
         content:"my message",
         _id:"64242042hkjwhr4273",
         sender:{
@@ -73,7 +68,7 @@ export const SampleMessages = [
                 url:"https://cdn.vectorstock.com/i/preview-1x/17/61/male-avatar-profile-picture-vector-10211761.jpg"
             }
         ],
-        content:"my message",
+        content:"",
         _id:"64242042hkjwhr42731",
         sender:{
             _id:"1234566",
