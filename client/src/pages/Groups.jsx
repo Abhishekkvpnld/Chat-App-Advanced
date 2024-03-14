@@ -1,11 +1,14 @@
-import React, { memo, useEffect, useState } from 'react';
-import { Box, Button, Drawer, Grid, IconButton, Stack, TextField, Tooltip, Typography } from "@mui/material";
-import { KeyboardBackspace as KeyboardBackspaceIcon, Menu as MenuIcon, Edit as EditIcon, Done as DoneIcon } from "@mui/icons-material";
+import React, { Suspense, lazy, memo, useEffect, useState } from 'react';
+import { Backdrop, Box, Button, Drawer, Grid, IconButton, Stack, TextField, Tooltip, Typography } from "@mui/material";
+import { KeyboardBackspace as KeyboardBackspaceIcon, Menu as MenuIcon, Edit as EditIcon, Done as DoneIcon, Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { matBlack } from '../constants/color';
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Link } from "../components/styles/StyledComponents";
 import AvatarCard from "../components/shared/AvatarCard";
 import { SampleChat } from "../constants/SampleChat";
+import ConfirmDeleteDialog from '../components/dialogs/ConfirmDeleteDialog';
+
+const confirmDeleteDialog = lazy(() => import("../components/dialogs/ConfirmDeleteDialog"));
 
 
 const Groups = () => {
@@ -17,6 +20,7 @@ const Groups = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [groupName, setGroupName] = useState("");
   const [groupNameUpdatedValue, setGroupNameUpdatedValue] = useState("");
+  const [confirmDeleteDialog, setConfirmDeleteDialog] = useState(false)
 
 
 
@@ -35,7 +39,27 @@ const Groups = () => {
   const updateGroupName = () => {
     setIsEdit(false);
     console.log(groupNameUpdatedValue);
-  }
+  };
+
+  const openAddMemberHandler = () => {
+    console.log("Add Members");
+  };
+
+  const openConfirmDeleteHandler = () => {
+    console.log("Delete Group");
+    setConfirmDeleteDialog(true);
+  };
+
+
+  const closeConfirmDeleteHandler = () => {
+    setConfirmDeleteDialog(false)
+  };
+
+  const deleteHandler = () => {
+    console.log("delete handler");
+    closeConfirmDeleteHandler();
+
+  };
 
   useEffect(() => {
     setGroupName(`Group Name ${chatId}`);
@@ -88,6 +112,8 @@ const Groups = () => {
     </>
   )
 
+
+
   const GroupName = (
     <Stack
       direction={"row"}
@@ -114,23 +140,32 @@ const Groups = () => {
     </Stack>
   )
 
+
+
   const ButtonGroup = (
     <Stack
-    spacing={"1rem"}
-    direction={{
-      xs:"column-reverse",
-      sm:"row"
-    }}
-    padding={{
-      xs:"0",
-      sm:"1rem",
-      md:"1rem 4rem"
-    }}
+      spacing={"1rem"}
+      direction={{
+        xs: "column-reverse",
+        sm: "row"
+      }}
+      padding={{
+        xs: "0",
+        sm: "1rem",
+        md: "1rem 4rem"
+      }}
     >
-      <Button size='large' color='error' variant='outlined'>Delete Group</Button>
-      <Button size='large' variant='contained' >Add Members</Button>
+      <Button size='large' color='error' variant='outlined' startIcon={<DeleteIcon />} onClick={openConfirmDeleteHandler}>
+        Delete Group
+      </Button>
+      <Button size='large' variant='contained' startIcon={<AddIcon />} onClick={openAddMemberHandler}>
+        Add Members
+      </Button>
+    
     </Stack>
   )
+
+
 
   return (
     <Grid container height={"100vh"}>
@@ -138,7 +173,7 @@ const Groups = () => {
         item
         sx={{
           display: {
-            xs: 'none',
+            xs: 'none', 
             sm: "block"
           }
         }}
@@ -162,6 +197,7 @@ const Groups = () => {
         {groupName && <>
 
           {GroupName}
+
           <Typography
             margin={"2rem"}
             alignSelf={"flex-start"}
@@ -191,6 +227,17 @@ const Groups = () => {
         </>}
 
       </Grid>
+
+      {
+        confirmDeleteDialog && (
+          <Suspense fallback={<Backdrop open />}>
+            <ConfirmDeleteDialog open={confirmDeleteDialog}
+              handleclose={closeConfirmDeleteHandler}
+              deleteHandler={deleteHandler}
+            />
+          </Suspense>
+        )
+      }
 
       <Drawer open={isMobileMenuOpen} onClose={handleMobileClose}
         sx={{
