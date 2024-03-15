@@ -6,7 +6,7 @@ const AvatarCard = ({avatar=[],max=4}) => {
   return (
    <Stack spacing={0.5} direction={"row"}>
 
-<AvatarGroup max={max}>
+<AvatarGroup max={max} sx={{position:"relative"}}>
 <Box width={"5rem"} height={"3rem"}>
     {
         avatar.map((src,index)=>(

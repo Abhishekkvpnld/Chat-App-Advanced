@@ -5,7 +5,8 @@ import { matBlack } from '../constants/color';
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Link } from "../components/styles/StyledComponents";
 import AvatarCard from "../components/shared/AvatarCard";
-import { SampleChat } from "../constants/SampleChat";
+import { SampleChat, SampleUsers } from "../constants/SampleChat";
+import UserItem from '../components/shared/userItem';
 
 const ConfirmDeleteDialog = lazy(() => import("../components/dialogs/ConfirmDeleteDialog"));
 const AddMemberDialog = lazy(() => import("../components/dialogs/AddMemberDialog"));
@@ -62,9 +63,15 @@ const Groups = () => {
 
   };
 
+  const removeMemberHandler = (id)=>{
+    console.log("removeMember",id );
+  }
+
   useEffect(() => {
+   if(chatId){
     setGroupName(`Group Name ${chatId}`);
     setGroupNameUpdatedValue(`Group Name ${chatId}`);
+   }
     return () => {
       setGroupName("");
       setGroupNameUpdatedValue("");
@@ -216,11 +223,24 @@ const Groups = () => {
               md: "1rem 4rem"
             }}
             spacing={"2rem"}
-            bgcolor={"lightgreen"}
+            // bgcolor={"lightgreen"}
             height={"50vh"}
             overflow={"auto"}
           >
             {/* Members Card */}
+
+{
+  SampleUsers.map((i)=>(
+    <UserItem key={i._id} user={i} isAdded styling={{
+      boxShadow: "0 0 0.5rem rgba(0, 0, 0, 0.2)",
+      padding:"1rem 2rem",
+      borderRadius:"1rem"
+    }}
+    handler={removeMemberHandler}
+    />
+  ))
+}
+
           </Stack>
 
           {ButtonGroup}
