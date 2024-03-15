@@ -6,10 +6,11 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { Link } from "../components/styles/StyledComponents";
 import AvatarCard from "../components/shared/AvatarCard";
 import { SampleChat } from "../constants/SampleChat";
-import ConfirmDeleteDialog from '../components/dialogs/ConfirmDeleteDialog';
 
-const confirmDeleteDialog = lazy(() => import("../components/dialogs/ConfirmDeleteDialog"));
+const ConfirmDeleteDialog = lazy(() => import("../components/dialogs/ConfirmDeleteDialog"));
+const AddMemberDialog = lazy(() => import("../components/dialogs/AddMemberDialog"));
 
+const isAddMember = false;
 
 const Groups = () => {
 
@@ -161,7 +162,7 @@ const Groups = () => {
       <Button size='large' variant='contained' startIcon={<AddIcon />} onClick={openAddMemberHandler}>
         Add Members
       </Button>
-    
+
     </Stack>
   )
 
@@ -173,7 +174,7 @@ const Groups = () => {
         item
         sx={{
           display: {
-            xs: 'none', 
+            xs: 'none',
             sm: "block"
           }
         }}
@@ -227,6 +228,15 @@ const Groups = () => {
         </>}
 
       </Grid>
+
+
+      {
+        isAddMember && (
+          <Suspense fallback={<Backdrop open />}>
+            <AddMemberDialog />
+          </Suspense>
+        )
+      }
 
       {
         confirmDeleteDialog && (
