@@ -9,9 +9,13 @@ const Chat = lazy(() => import("./pages/Chat"));
 const Groups = lazy(() => import("./pages/Groups"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
-
+// Admin Dashboard
 const AdminLogin = lazy(() => import("./pages/Admin/AdminLogin"));
 const DashBoard = lazy(() => import("./pages/Admin/DashBoard"));
+const MessageManagement = lazy(()=>import("./pages/Admin/MessageManagement"));
+const ChatManagement = lazy(()=>import ("./pages/Admin/ChatManagement"));
+const UserManagement = lazy(()=>import ("./pages/Admin/UserManagement"));
+
 
 const user = true
 
@@ -28,6 +32,9 @@ function App() {
 
           <Route path='/admin' element={<AdminLogin />} />
           <Route path='/admin/dashboard' element={<DashBoard/>}/>
+          <Route path='/admin/users' element={<UserManagement/>}/>
+          <Route path='/admin/chats' element={<ChatManagement/>}/>
+          <Route path='/admin/messages' element={<MessageManagement/>} />
 
           <Route path='/login' element={<ProtectRoute user={!user} redirect='/' > <Login /> </ProtectRoute>} />
           <Route path='*' element={<NotFound />} />
