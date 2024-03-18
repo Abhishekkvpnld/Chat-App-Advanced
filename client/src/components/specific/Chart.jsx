@@ -11,6 +11,8 @@ import {
     ArcElement,
     Legend
 } from "chart.js";
+import { getLast7Days } from '../../lib/Features';
+import { blue, green } from '@mui/material/colors';
 
 ChartJS.register(CategoryScale,
     Tooltip,
@@ -49,11 +51,13 @@ const LineChartOptions = {
     }
 }
 
+const label = getLast7Days();
+
 const LineChart = ({ value = [] }) => {
     let data = {
-        labels: ["Jan", "Feb", "Mar", "Apr", "May", "June", "July"],
+        labels: label,
         datasets: [{
-            data: [1, 2, 36, 10, 25, 6, 2, 40],
+            data: value,
             label: "Revenue",
             fill: true,
             backgroundColor: "lightblue",
@@ -65,10 +69,36 @@ const LineChart = ({ value = [] }) => {
     )
 }
 
-const DoughnutChart = () => {
-    return (
-        <div>chart</div>
-    )
+const DoughnutChartOptions = {
+    responsive: true,
+    plugins: {
+        Legend: {
+            display: false
+        },
+        title: {
+            display: false
+        }
+    },
+   cutout:100
 }
+
+const DoughnutChart = ({ value = [], labels = [] }) => {
+    const blue = "blue"; 
+    const green = "green";
+
+    const data = {
+        labels: labels,
+        datasets: [{
+            data: value,
+            label: "Single Chats vs Group Chats",
+            backgroundColor: ["lightblue", "lightgreen"],
+            borderColor: [blue, green],
+            offset:20
+        }]
+    };
+
+    return <Doughnut data={data} style={{zIndex:10}} options={DoughnutChartOptions} />;
+};
+
 
 export { LineChart, DoughnutChart };

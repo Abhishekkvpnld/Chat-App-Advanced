@@ -13,7 +13,7 @@ const Header = () => {
     const [isMobile,setIsmobile] = useState(false);
     const [isSearch,setIsSearch] = useState(false);
     const [isNewGroup,setIsNewGroup] = useState(false);
-    const [isNotification,setIsNotification] = useState(false)
+    const [isNotification,setIsNotification] = useState(false);
 
 const Navigate = useNavigate();
 
