@@ -60,8 +60,8 @@ const LineChart = ({ value = [] }) => {
             data: value,
             label: "Revenue",
             fill: true,
-            backgroundColor: "lightblue",
-            borderColor: "rgba(75,192,192,1)"
+            backgroundColor: "#ffb3b3",
+            borderColor: "#660000"
         }]
     }
     return (

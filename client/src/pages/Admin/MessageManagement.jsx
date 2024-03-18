@@ -1,5 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import AdminLayout from '../../components/layout/AdminLayout';
+import Table from '../../components/shared/Table';
+import { Dashboard } from '@mui/icons-material';
+import { dashboardData } from '../../constants/SampleChat';
+import { fileFormat, transformImage } from '../../lib/Features';
+import moment from 'moment';
+import { Avatar, Box, Stack } from '@mui/material';
+import RenderAttachment from "../../components/shared/RenderAttachment";
 
 const column = [
   {
@@ -13,9 +20,28 @@ const column = [
     headerName: "Attachments",
     headerClassName: "table-header",
     width: 200,
-    renderCell: (params) => (
-      <Avatar alt={params.row.name} src={params.row.avatar} />
-    )
+    renderCell: (params) => {
+
+      const { attachments } = params.row;
+
+      return attachments?.length > 0 ?
+        attachments.map((i,index) => {
+
+          const url = i.url;
+          const file = fileFormat(url);
+
+
+          return (
+            <Box key={index}>
+              <a href={url} download target='_blank' style={{ color: "black" }}>
+                {RenderAttachment(file, url)}
+              </a>
+            </Box>
+          )
+        })
+        : "No Attachments";
+    }
+
   },
 
   {
@@ -30,7 +56,7 @@ const column = [
     headerClassName: "table-header",
     width: 200,
     renderCell: (params) => (
-      <Stack>
+      <Stack direction={"row"} alignItems={"center"} spacing={"1rem"}>
         <Avatar alt={params.row.sender.name} src={params.row.sender.avatar} />
         <span>{params.row.sender.name}</span>
       </Stack>
@@ -57,9 +83,29 @@ const column = [
 ]
 
 const MessageManagement = () => {
+
+  const [rows, setRows] = useState([]);
+
+  useEffect(() => {
+    setRows(dashboardData.messages.map((i) => ({
+      ...i,
+      id: i._id,
+      sender: {
+        name: i.sender.name,
+        avatar: transformImage(i.sender.avatar, 50)
+      },
+      createdAt: moment(i.createdAt, "YYYY-MM-DDTHH:mm:ss:SSSZ").format("MMMM Do YYYY, h:mm:ss a")
+    })))
+  }, [])
+
   return (
     <AdminLayout>
-      <div>MessageManagement</div>
+      <Table
+       heading={"All Messages"} 
+       column={column}
+        rows={rows} 
+        rowHeight={200}
+        />
     </AdminLayout>
   )
 }
