@@ -78,3 +78,61 @@ export const SampleMessages = [
         createdAt:"2024-02-12T10:41:30.630Z"
     },
 ];
+
+export const dashboardData = {
+    users:[
+        {
+            name:"user1",
+            avatar:"https://cdn.vectorstock.com/i/preview-1x/17/61/male-avatar-profile-picture-vector-10211761.jpg",
+            _id:"1",
+            username:"user1",
+            friends:25,
+            groups:5
+        },
+        {
+            name:"user2",
+            avatar:"https://cdn.vectorstock.com/i/preview-1x/17/61/male-avatar-profile-picture-vector-10211761.jpg",
+            _id:"2",
+            username:"user2",
+            friends:30,
+            groups:15
+        },
+    ],
+    chats:[
+        
+            {
+                name:"group1",
+                avatar:["https://cdn.vectorstock.com/i/preview-1x/17/61/male-avatar-profile-picture-vector-10211761.jpg"],
+                _id:"1",
+                groupChat:false,
+                members:[
+                    {_id:"1",avatar:"https://cdn.vectorstock.com/i/preview-1x/17/61/male-avatar-profile-picture-vector-10211761.jpg"},
+                    {_id:"2",avatar:"https://cdn.vectorstock.com/i/preview-1x/17/61/male-avatar-profile-picture-vector-10211761.jpg"}
+                ],
+                totalMembers:2,
+                totalMessages:20,
+                creator:{
+                    name:"user2",
+                    avatar:"https://cdn.vectorstock.com/i/preview-1x/17/61/male-avatar-profile-picture-vector-10211761.jpg"
+                }
+            },
+            {
+                name:"group2",
+                avatar:["https://cdn.vectorstock.com/i/preview-1x/17/61/male-avatar-profile-picture-vector-10211761.jpg"],
+                _id:"2",
+                groupChat:false,
+                members:[
+                    {_id:"1",avatar:"https://cdn.vectorstock.com/i/preview-1x/17/61/male-avatar-profile-picture-vector-10211761.jpg"},
+                    {_id:"2",avatar:"https://cdn.vectorstock.com/i/preview-1x/17/61/male-avatar-profile-picture-vector-10211761.jpg"}
+                ],
+                totalMembers:2,
+                totalMessages:20,
+                creator:{
+                    name:"user1",
+                    avatar:"https://cdn.vectorstock.com/i/preview-1x/17/61/male-avatar-profile-picture-vector-10211761.jpg"
+                }
+            },
+    
+    
+    ]
+}
