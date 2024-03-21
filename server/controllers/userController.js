@@ -1,3 +1,4 @@
+import { compare } from "bcrypt";
 import { User } from "../models/userModel.js";
 import { sendToken } from "../utils/webToken.js";
 
@@ -19,10 +20,22 @@ export const newUser = async (req, res) => {
         avatar: avatar
     })
 
-    sendToken(res,user,201,"User created");
+    sendToken(res, user, 201, "User created");
 }
 
-export const logIn = (req, res) => {
-    res.send("user login")
+export const logIn = async (req, res) => {
+
+    const { username, password } = req.body;
+    console.log(username, password);
+
+    const user = await User.findOne({ username }).select("+password");
+    if (!user) {
+        return res.status(400).json({ message: "Invalid Username" });
+    }
+    const isMatch = await compare(password, user.password);
+    if (!isMatch) {
+        return res.status(400).json({ message: "Invalid Password" });
+    } 
+    sendToken(res, user, 200, `login successfull, Welcome back ${user.name}`);
 }
 
