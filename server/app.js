@@ -2,6 +2,8 @@ import express from "express";
 import userRoute from "./routes/userRoute.js";
 import connectDB from "./utils/dbConnection.js";
 import dotenv from "dotenv";
+import { errorMiddleware } from "./middlewares/error.js";
+import cookieParser from "cookie-parser";
 
 
 dotenv.config();
@@ -16,14 +18,16 @@ const app = express();
 
 //middlewares
 app.use(express.json());
-// app.use(express.urlencoded());
+app.use(cookieParser());
 
 app.get("/",(req,res)=>{
     res.send("Hello")
 })
 
 app.use("/user",userRoute) 
+app.use(errorMiddleware);
 
+//Server Running on PORT
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 }); 

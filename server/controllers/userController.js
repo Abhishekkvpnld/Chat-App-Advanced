@@ -1,6 +1,8 @@
 import { compare } from "bcrypt";
 import { User } from "../models/userModel.js";
 import { sendToken } from "../utils/webToken.js";
+import { tryCatch } from "../middlewares/error.js";
+import { ErrorHandler } from "../utils/utility.js";
 
 //Create new user and save to database and save in cookie
 export const newUser = async (req, res) => {
@@ -23,19 +25,23 @@ export const newUser = async (req, res) => {
     sendToken(res, user, 201, "User created");
 }
 
-export const logIn = async (req, res) => {
+//login user and add token in cookie
+export const logIn = tryCatch(async (req, res, next) => {
 
     const { username, password } = req.body;
     console.log(username, password);
 
     const user = await User.findOne({ username }).select("+password");
-    if (!user) {
-        return res.status(400).json({ message: "Invalid Username" });
-    }
+    if (!user) return next(new ErrorHandler("Invalid Username or Password", 404))
+
     const isMatch = await compare(password, user.password);
-    if (!isMatch) {
-        return res.status(400).json({ message: "Invalid Password" });
-    } 
+    if (!isMatch) next(new ErrorHandler("Invalid Username or Password", 404))
     sendToken(res, user, 200, `login successfull, Welcome back ${user.name}`);
+
+});
+
+export const getMyProfile = async (req, res) => {
+    const user = await User.findById(req.user);
+    res.status(200).json({ success: true, data: user });
 }
 
