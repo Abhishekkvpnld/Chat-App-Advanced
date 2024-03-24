@@ -25,6 +25,7 @@ export const newUser = async (req, res) => {
     sendToken(res, user, 201, "User created");
 }
 
+
 //login user and add token in cookie
 export const logIn = tryCatch(async (req, res, next) => {
 
@@ -40,8 +41,30 @@ export const logIn = tryCatch(async (req, res, next) => {
 
 });
 
-export const getMyProfile = async (req, res) => {
+
+export const getMyProfile = tryCatch(async (req, res) => {
     const user = await User.findById(req.user);
     res.status(200).json({ success: true, data: user });
-}
+})
 
+
+export const logout = tryCatch(async (req, res) => {
+
+    const cookieOptions = {
+        maxAge: 0,
+        sameSite: "none",
+        httpOnly: true,
+        secure: true
+    };
+
+    return res.status(200).cookie("chat-token", "", cookieOptions).json({ success: true, data: "Logged out successfully..." });
+});
+
+
+export const searchUser = tryCatch(async (req,res) => {
+    const { name } = req.query;
+
+
+    res.status(201).json({ success: true, data: name })
+}
+)
