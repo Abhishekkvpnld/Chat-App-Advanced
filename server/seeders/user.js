@@ -1,5 +1,7 @@
+import { Chat } from "../models/chatModel.js";
 import { User } from "../models/userModel.js";
-import { faker } from "@faker-js/faker";
+import { Message } from "../models/messageModel.js";
+import { faker, simpleFaker } from "@faker-js/faker";
 
 
 
@@ -12,18 +14,18 @@ export const createUser = async (numUsers) => {
             const tempUser = User.create({
                 name: faker.person.fullName(),
                 username: faker.internet.userName(),
-                bio:faker.lorem.sentence(10),
-                password:"password",
-                avatar:{
-                    url:faker.image.avatar(),
-                    public_id:faker.system.fileName()
+                bio: faker.lorem.sentence(10),
+                password: "password",
+                avatar: {
+                    url: faker.image.avatar(),
+                    public_id: faker.system.fileName()
                 }
             })
             Userpromise.push(tempUser);
         }
 
         await Promise.all(Userpromise);
-        console.log("user created",numUsers);
+        console.log("user created", numUsers);
         process.exit(1)
 
     } catch (error) {
@@ -31,3 +33,5 @@ export const createUser = async (numUsers) => {
         process.exit(1)
     }
 };
+
+

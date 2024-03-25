@@ -339,6 +339,38 @@ export const renameGroup = tryCatch(async (req, res, next) => {
 });
 
 
+export const getMessages = tryCatch(async (req, res, next) => {
+
+    const chatId = req.params.id;
+    const { page = 1 } = req.query;
+
+    const resultPerPage = 20;
+    const skip = (page - 1) * resultPerPage;
+
+    const [message, totalMessageCount] = await Promise.all([
+        Message.find({ chat: chatId })
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(resultPerPage)
+            .populate("sender", "name avatar")
+            .lean(),
+        Message.countDocuments({ chat: chatId })
+
+    ]);
+
+    const totalPages = Math.ceil(totalMessageCount / resultPerPage);
+
+    res.status(200).json({
+        success: true,
+        message: message.reverse(),
+        totalPages
+    })
+
+
+
+})
+
+
 export const deleteChat = tryCatch(async (req, res, next) => {
 
     const chatId = req.params.id;
@@ -372,11 +404,11 @@ export const deleteChat = tryCatch(async (req, res, next) => {
         Message.deleteMany({ chat: chatId }),
     ]);
 
-    emitEvent(req,REFETCH_CHAT,members);
+    emitEvent(req, REFETCH_CHAT, members);
 
     res.status(200).json({
-        success:true,
-        message:"Chat deleted successfully"
+        success: true,
+        message: "Chat deleted successfully"
     })
 
 
