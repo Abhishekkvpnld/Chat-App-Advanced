@@ -7,7 +7,6 @@ export const isAuthenticated = async (req, res, next) => {
     if (!token) return next(new ErrorHandler("Please login to access this route", 401))
 
     const decodedData = Jwt.verify(token,process.env.JWT_SECRET);
-    console.log(decodedData);
 
     req.user = decodedData._id;
 

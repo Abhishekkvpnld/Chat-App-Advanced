@@ -8,7 +8,6 @@ import { ErrorHandler } from "../utils/utility.js";
 export const newUser = async (req, res) => {
 
     const { name, username, password, bio } = req.body;
-    console.log(req.body);
 
     const avatar = {
         public_id: "qwedad",
@@ -30,7 +29,6 @@ export const newUser = async (req, res) => {
 export const logIn = tryCatch(async (req, res, next) => {
 
     const { username, password } = req.body;
-    console.log(username, password);
 
     const user = await User.findOne({ username }).select("+password");
     if (!user) return next(new ErrorHandler("Invalid Username or Password", 404))
