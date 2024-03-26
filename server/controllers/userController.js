@@ -3,6 +3,10 @@ import { User } from "../models/userModel.js";
 import { sendToken } from "../utils/webToken.js";
 import { tryCatch } from "../middlewares/error.js";
 import { ErrorHandler } from "../utils/utility.js";
+import { Chat } from "../models/chatModel.js";
+import { Request } from "../models/requestModel.js";
+import emitEvent from "../utils/emitEvent.js";
+import { NEW_REQUEST } from "../constants/events.js";
 
 //Create new user and save to database and save in cookie
 export const newUser = async (req, res) => {
@@ -59,10 +63,58 @@ export const logout = tryCatch(async (req, res) => {
 });
 
 
-export const searchUser = tryCatch(async (req,res) => {
-    const { name } = req.query;
+export const searchUser = tryCatch(async (req, res) => {
+    const { name = "" } = req.query;
+
+    //Finding all my chats
+    const myChats = await Chat.find({ groupChat: false, members: req.user });
+
+    // Extracting all users from my chats means friends or people I have chatted with
+    const allUsersfromMyChat = myChats.flatMap((chat) => chat.members);
+
+    const allUsersExceptMeAndFriends = await User.find({
+        _id: { $nin: allUsersfromMyChat },
+        name: { $regex: name, $options: "i" }
+    });
+
+    const users = allUsersExceptMeAndFriends.map(({ _id, name, avatar }) => ({
+        _id,
+        name,
+        avatar: avatar.url
+    }))
 
 
-    res.status(201).json({ success: true, data: name })
+
+    res.status(201).json({
+        success: true,
+        users
+    });
 }
-)
+);
+
+
+export const sendFriendRequest = tryCatch(async (req, res, next) => {
+
+    const { userId } = req.body;
+
+    const request = await Request.findOne({
+        $or:[
+            {sender:req.user,receiver:userId},
+            {sender:userId,receiver:req.user}
+        ]
+    });
+
+    if (request) return next(new ErrorHandler("Request already sent", 400));
+
+    await Request.create({
+        sender: req.user,
+        receiver: userId
+    });
+
+    emitEvent(req, NEW_REQUEST, [userId]);
+
+    return res.status(200).json({
+        success: true,
+        message: "Friend Request Send..."
+    });
+});

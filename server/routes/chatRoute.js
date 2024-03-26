@@ -24,9 +24,9 @@ app.post("/messages", AttachmentsMulter, sendAttachmentsValidator(), validateHan
 app.get("/messages/:id", chatIdValidator(), validateHandler, getMessages);
 //Get Chat details, Rename, Delete
 app.route("/:id")
-    .get(chatIdValidator(),validateHandler,getChatDetails)
-    .put( renameGroupValidator(),validateHandler,renameGroup)
-    .delete(chatIdValidator(),validateHandler,deleteChat);
+    .get(chatIdValidator(), validateHandler, getChatDetails)
+    .put(renameGroupValidator(), validateHandler, renameGroup)
+    .delete(chatIdValidator(), validateHandler, deleteChat);
 
 
 export default app;   

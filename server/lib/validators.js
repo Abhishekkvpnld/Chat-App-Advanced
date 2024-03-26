@@ -29,6 +29,12 @@ export const loginValidator = () => [
 ];
 
 
+export const sendRequestValidator = () => [
+    body("userId", "Please Enter User Id").notEmpty(),
+];
+
+
+
 
 export const newGroupChatValidator = () => [
     body("name", "Please Enter Name").notEmpty(),
