@@ -34,6 +34,11 @@ export const sendRequestValidator = () => [
 ];
 
 
+export const acceptRequestValidator = () => [
+    body("requestId", "Please Enter Request Id").notEmpty(),
+    body("accept").notEmpty().withMessage( "Please Add Accept").isBoolean().withMessage("Acccept must be a boolean")
+];
+
 
 
 export const newGroupChatValidator = () => [
@@ -71,6 +76,7 @@ export const renameGroupValidator = () => [
     param("id", "Please Enter Chat ID").notEmpty(),
     body("name", "Please Enter New Name").notEmpty()
 ];
+
 
 
 

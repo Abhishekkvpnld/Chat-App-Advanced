@@ -3,7 +3,7 @@ import { ErrorHandler } from "../utils/utility.js";
 import { Chat } from "../models/chatModel.js";
 import emitEvent from "../utils/emitEvent.js";
 import { ALERT, NEW_ATTACHMENT, NEW_MESSAGE_ALLERT, REFETCH_CHAT } from "../constants/events.js";
-import { getOthermember } from "../lib/helper.js";
+import { getOtherMember } from "../lib/helper.js";
 import { User } from "../models/userModel.js";
 import { Message } from "../models/messageModel.js";
 import deleteFileFromCloudinary from "../utils/deleteFilesFromCloudinary.js";
@@ -41,8 +41,8 @@ export const getMyChats = tryCatch(async (req, res, next) => {
         return {
             _id,
             groupChat,
-            avatar: groupChat ? members.slice(0, 3).map(({ avatar }) => avatar.url) : [getOthermember.avatar.url],
-            name: groupChat ? name : getOthermember.name,
+            avatar: groupChat ? members.slice(0, 3).map(({ avatar }) => avatar.url) : [getOtherMember.avatar.url],
+            name: groupChat ? name : getOtherMember.name,
             members: members.reduce((prev, curr) => {
                 if (curr._id.toString() !== req.user.toString()) {
                     prev.push(curr._id);
