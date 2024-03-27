@@ -20,6 +20,9 @@ const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI;
 connectDB(MONGO_URI);
 
+
+export const adminSecretKey = process.env.ADMIN_SECRET_KEY || "adminauthentication";
+
 // createSingleChats(10);
 // createGroupChat(10);
 // createMessagesInAChat("66019a90e0489af3e4f04bb2",50)
