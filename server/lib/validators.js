@@ -1,5 +1,5 @@
 
-import { body, check, validationResult, param, query } from "express-validator";
+import { body, validationResult, param } from "express-validator";
 import { ErrorHandler } from "../utils/utility.js";
 
 export const validateHandler = (req, res, next) => {
@@ -19,7 +19,6 @@ export const registerValidator = () => [
     body("username", "Please Enter Username").notEmpty(),
     body("password", "Please Enter Password").notEmpty(),
     body("bio", "Please Enter Bio").notEmpty(),
-    check("avatar", "Please Upload Avatar").notEmpty()
 ];
 
 
@@ -68,8 +67,6 @@ export const chatIdValidator = () => [
 
 export const sendAttachmentsValidator = () => [
     body("chatId", "Please Enter Chat ID").notEmpty(),
-    check("files").notEmpty().withMessage("Please Upload Attachments")
-        .isArray({ min: 1, max: 5 }).withMessage("Attachments must be 1-5")
 ];
 
 export const renameGroupValidator = () => [

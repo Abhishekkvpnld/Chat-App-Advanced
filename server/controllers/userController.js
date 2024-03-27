@@ -10,9 +10,14 @@ import { NEW_REQUEST, REFETCH_CHAT } from "../constants/events.js";
 import { getOtherMember } from "../lib/helper.js";
 
 //Create new user and save to database and save in cookie
-export const newUser = async (req, res) => {
+export const newUser = tryCatch(async (req, res, next) => {
 
     const { name, username, password, bio } = req.body;
+
+    const file = req.file;
+
+    if (!file)
+        return next(new ErrorHandler("Please Upload Avatar"))
 
     const avatar = {
         public_id: "qwedad",
@@ -27,7 +32,7 @@ export const newUser = async (req, res) => {
     })
 
     sendToken(res, user, 201, "User created");
-}
+});
 
 
 //login user and add token in cookie
@@ -189,7 +194,7 @@ export const getMyFriends = tryCatch(async (req, res, next) => {
         groupChat: false
     }).populate("members", "name avatar");
 
-    const friends = chats.map(({members}) => {
+    const friends = chats.map(({ members }) => {
         const otherUser = getOtherMember(members, req.user)
 
         return {
