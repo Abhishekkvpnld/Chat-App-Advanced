@@ -1,3 +1,4 @@
+import { userSocketIDs } from "../app.js";
 
 
 export const getOtherMember = (members, userId) => {
@@ -9,3 +10,9 @@ export const getOtherMember = (members, userId) => {
     const otherMember = members.find((member) => member._id.toString() !== userId.toString());
     return otherMember;
 };
+
+
+export const getSockets = (users = []) => {
+    const sockets = users.map((user) => userSocketIDs.get(user._id.toString()));
+    return sockets;
+}
