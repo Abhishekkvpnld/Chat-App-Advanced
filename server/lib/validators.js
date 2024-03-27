@@ -78,5 +78,11 @@ export const renameGroupValidator = () => [
 ];
 
 
+//Admin validators 
+
+export const adminLoginValidator = () => [
+    body("secretKey", "Please Enter Secret Key").notEmpty(),
+];
+
 
 

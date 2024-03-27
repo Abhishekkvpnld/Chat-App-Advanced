@@ -3,13 +3,14 @@ import connectDB from "./utils/dbConnection.js";
 import dotenv from "dotenv";
 import { errorMiddleware } from "./middlewares/error.js";
 import cookieParser from "cookie-parser";
+
 // import { createUser } from "./seeders/user.js";
 // import { createGroupChat, createMessagesInAChat, createSingleChats, } from "./seeders/chat.js";
 
 //Routes
-import chatRoute from "./routes/chatRoute.js"
+import chatRoute from "./routes/chatRoute.js";
 import userRoute from "./routes/userRoute.js";
-
+import adminRoute from "./routes/adminRoute.js";
 
 dotenv.config();
 
@@ -36,6 +37,8 @@ app.get("/", (req, res) => {
 
 app.use("/user", userRoute);
 app.use("/chat", chatRoute);
+app.use("/admin",adminRoute);
+
 app.use(errorMiddleware);
 
 //Server Running on PORT
