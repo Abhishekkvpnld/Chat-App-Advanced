@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import { Server } from "socket.io";
 import http from 'http';
 import { v4 as uuid } from "uuid";
+import cors from "cors";
 
 // import { createUser } from "./seeders/user.js";
 // import { createGroupChat, createMessagesInAChat, createSingleChats, } from "./seeders/chat.js";
@@ -43,24 +44,29 @@ const io = new Server(server, {});
 //middlewares
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors({
+    origin:["http://localhost:5173","http://localhost:4173",process.env.CLIENT_URL],
+    credentials:true
+}));
+
 
 app.get("/", (req, res) => {
     res.send("Hello")
-})
+});
 
-app.use("/user", userRoute);
-app.use("/chat", chatRoute);
-app.use("/admin", adminRoute);
+app.use("/api/v1/user", userRoute);
+app.use("/api/v1/chat", chatRoute);
+app.use("/api/v1/admin", adminRoute);
 
 //socket middleware
-io.use((socket,next)=>{});
+io.use((socket, next) => { });
 
 //socket.io connection
 io.on("connection", (socket) => {
     const user = {
         _id: "sddadd",
         name: "dasdada"
-    }
+    };
 
     userSocketIDs.set(user._id.toString(), socket.id);
 

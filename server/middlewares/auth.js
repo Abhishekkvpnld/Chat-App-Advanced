@@ -1,8 +1,9 @@
 import { ErrorHandler } from "../utils/utility.js";
 import Jwt from "jsonwebtoken";
 import {adminSecretKey} from "../app.js";
+import { tryCatch } from "./error.js";
 
-export const isAuthenticated = async (req, res, next) => {
+export const isAuthenticated = tryCatch(async (req, res, next) => {
     const token = req.cookies["chat-token"];
 
     if (!token)
@@ -13,7 +14,7 @@ export const isAuthenticated = async (req, res, next) => {
     req.user = decodedData._id;
 
     next();
-};
+});
 
 
 export const adminOnly = async (req, res, next) => {
