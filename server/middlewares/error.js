@@ -32,6 +32,6 @@ export const tryCatch = (passedFunction) => async (req, res, next) => {
         await passedFunction(req, res, next);
     } catch (error) {
         next(error);
-    }
+    };
 
 };

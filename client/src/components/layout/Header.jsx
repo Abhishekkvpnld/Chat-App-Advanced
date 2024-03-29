@@ -1,43 +1,58 @@
 import { AppBar, Backdrop, Box, IconButton, Toolbar, Tooltip, Typography } from '@mui/material';
 import { orange } from "../../constants/color";
 import React, { Suspense, lazy, useState } from 'react';
-import { Menu as MenuIcon, Search as SearchIcon, Add as AddIcon, Group as GroupIcon,Logout as LogoutIcon,Notifications as NotificationIcon } from "@mui/icons-material";
+import { Menu as MenuIcon, Search as SearchIcon, Add as AddIcon, Group as GroupIcon, Logout as LogoutIcon, Notifications as NotificationIcon } from "@mui/icons-material";
 import { useNavigate } from 'react-router-dom';
- 
-const Search = lazy(()=>import('../specific/Search'));
-const Notification = lazy(()=>import('../specific/Notification'));
-const NewGroup = lazy(()=>import('../specific/NewGroup'));
+import { useDispatch } from "react-redux";
+import toast from 'react-hot-toast';
+import axios from 'axios';
+import { server } from '../../constants/config';
+import { userNotExists } from '../../../redux/reducers/auth';
+
+const Search = lazy(() => import('../specific/Search'));
+const Notification = lazy(() => import('../specific/Notification'));
+const NewGroup = lazy(() => import('../specific/NewGroup'));
 
 const Header = () => {
 
-    const [isMobile,setIsmobile] = useState(false);
-    const [isSearch,setIsSearch] = useState(false);
-    const [isNewGroup,setIsNewGroup] = useState(false);
-    const [isNotification,setIsNotification] = useState(false);
+    const [isMobile, setIsmobile] = useState(false);
+    const [isSearch, setIsSearch] = useState(false);
+    const [isNewGroup, setIsNewGroup] = useState(false);
+    const [isNotification, setIsNotification] = useState(false);
 
-const Navigate = useNavigate();
+    const Navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleMobile = () => {
-        setIsmobile((prev)=>!prev)
+        setIsmobile((prev) => !prev)
     }
 
     const openSearch = () => {
-        setIsSearch((prev)=>!prev)
+        setIsSearch((prev) => !prev)
     }
 
-    const openNewGroup = ()=>{
-        setIsNewGroup((prev)=>!prev)
+    const openNewGroup = () => {
+        setIsNewGroup((prev) => !prev)
     }
 
-    const logoutHandler = ()=>{
-console.log('logout');
-    }
+    const logoutHandler = async () => {
+        console.log('logout');
+        try {
 
-    const openNotification = ()=>{
-        setIsNotification((prev)=>!prev)
-    }
+            const { data } = await axios.get(`${server}/api/v1/user/logout`, { withCredentials: true });
+            dispatch(userNotExists());
+            toast.success(data.message);
 
-    const navigateToGroup = ()=>Navigate("/groups")
+        } catch (error) {
+            toast.error(error?.response?.data?.message || "Something Went Wrong...");
+        };
+    };
+
+    const openNotification = () => {
+        setIsNotification((prev) => !prev)
+    };
+
+    const navigateToGroup = () => Navigate("/groups")
     return (
         <>
             <Box sx={{ flexGrow: 1 }} height={"4rem"} >
@@ -71,11 +86,11 @@ console.log('logout');
 
                         <Box>
 
-                            <BtnIcon title={"Search"} onClick={openSearch} icon={<SearchIcon/>} />
-                            <BtnIcon title={"New Group"} onClick={openNewGroup} icon={<AddIcon/>} />
-                            <BtnIcon title={"Manage Group"} onClick={navigateToGroup} icon={<GroupIcon/>} />
-                            <BtnIcon title={"Logout"} onClick={logoutHandler} icon={<LogoutIcon/>} />
-                            <BtnIcon title={"Notifications"} onClick={openNotification} icon={<NotificationIcon/>} />
+                            <BtnIcon title={"Search"} onClick={openSearch} icon={<SearchIcon />} />
+                            <BtnIcon title={"New Group"} onClick={openNewGroup} icon={<AddIcon />} />
+                            <BtnIcon title={"Manage Group"} onClick={navigateToGroup} icon={<GroupIcon />} />
+                            <BtnIcon title={"Logout"} onClick={logoutHandler} icon={<LogoutIcon />} />
+                            <BtnIcon title={"Notifications"} onClick={openNotification} icon={<NotificationIcon />} />
 
                         </Box>
 
@@ -84,34 +99,34 @@ console.log('logout');
 
             </Box>
 
-{ isSearch && (
-    <Suspense fallback={<Backdrop open />}>
-        <Search/>
-    </Suspense>
-) }
+            {isSearch && (
+                <Suspense fallback={<Backdrop open />}>
+                    <Search />
+                </Suspense>
+            )}
 
-{ isNotification && (
-      <Suspense fallback={<Backdrop open />}>
-        <Notification/>
-    </Suspense>
-) }
+            {isNotification && (
+                <Suspense fallback={<Backdrop open />}>
+                    <Notification />
+                </Suspense>
+            )}
 
-{ isNewGroup && (
-       <Suspense fallback={<Backdrop open />}>   
-        <NewGroup/>
-    </Suspense>
-) }
+            {isNewGroup && (
+                <Suspense fallback={<Backdrop open />}>
+                    <NewGroup />
+                </Suspense>
+            )}
 
         </>
     )
 }
 
-const BtnIcon =({title,icon,onClick})=>{
-    return(
+const BtnIcon = ({ title, icon, onClick }) => {
+    return (
         <Tooltip title={title}>
-        <IconButton color='inherit' size='large' onClick={onClick}>
-              {icon}
-          </IconButton>
+            <IconButton color='inherit' size='large' onClick={onClick}>
+                {icon}
+            </IconButton>
         </Tooltip>
     )
 }

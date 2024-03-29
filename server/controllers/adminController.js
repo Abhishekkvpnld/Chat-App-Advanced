@@ -40,7 +40,7 @@ export const adminLogout = tryCatch(async (req, res, next) => {
             success: true,
             message: "Logged Out Successfully"
         })
-})
+});
 
 
 export const getAdminData = tryCatch(async(req,res,next)=>{

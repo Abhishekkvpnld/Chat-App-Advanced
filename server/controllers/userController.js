@@ -8,6 +8,7 @@ import { Request } from "../models/requestModel.js";
 import emitEvent from "../utils/emitEvent.js";
 import { NEW_REQUEST, REFETCH_CHAT } from "../constants/events.js";
 import { getOtherMember } from "../lib/helper.js";
+import { uploadFilesToCloudinary } from "../utils/cloudinary.js";
 
 //Create new user and save to database and save in cookie
 export const newUser = tryCatch(async (req, res, next) => {
@@ -16,13 +17,16 @@ export const newUser = tryCatch(async (req, res, next) => {
 
     const file = req.file;
 
-    if (!file)
-        return next(new ErrorHandler("Please Upload Avatar"))
+    if (!file) return next(new ErrorHandler("Please Upload Avatar", 400));
+
+    const result = await uploadFilesToCloudinary([file]);
 
     const avatar = {
-        public_id: "qwedad",
-        url: "erwsfewfws"
+        public_id: result[0].public_id,
+        url: result[0].url
     };
+
+
     const user = await User.create({
         name: name,
         bio,
@@ -41,10 +45,15 @@ export const logIn = tryCatch(async (req, res, next) => {
     const { username, password } = req.body;
 
     const user = await User.findOne({ username }).select("+password");
-    if (!user) return next(new ErrorHandler("Invalid Username or Password", 404))
+
+    if (!user)
+        return next(new ErrorHandler("Invalid Username or Password", 404));
 
     const isMatch = await compare(password, user.password);
-    if (!isMatch) next(new ErrorHandler("Invalid Username or Password", 404))
+
+    if (!isMatch)
+        return next(new ErrorHandler("Invalid Username or Password", 404));
+
     sendToken(res, user, 200, `login successfull, Welcome back ${user.name}`);
 
 });
@@ -52,7 +61,7 @@ export const logIn = tryCatch(async (req, res, next) => {
 
 export const getMyProfile = tryCatch(async (req, res) => {
     const user = await User.findById(req.user);
-    res.status(200).json({ success: true, data: user });
+    res.status(200).json({ success: true, user: user });
 })
 
 
@@ -65,7 +74,7 @@ export const logout = tryCatch(async (req, res, next) => {
         secure: true
     };
 
-    return res.status(200).cookie("chat-token", "", cookieOptions).json({ success: true, data: "Logged out successfully..." });
+    return res.status(200).cookie("chat-token", "", cookieOptions).json({ success: true, message: "Logged out successfully..." });
 });
 
 

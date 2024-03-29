@@ -6,7 +6,7 @@ import { ALERT, NEW_ATTACHMENT, NEW_MESSAGE_ALLERT, REFETCH_CHAT } from "../cons
 import { getOtherMember } from "../lib/helper.js";
 import { User } from "../models/userModel.js";
 import { Message } from "../models/messageModel.js";
-import deleteFileFromCloudinary from "../utils/deleteFilesFromCloudinary.js";
+import {deleteFileFromCloudinary} from "../utils/cloudinary.js";
 
 
 

@@ -19,19 +19,48 @@ const Login = () => {
     const name = useInputValidation('');
     const username = useInputValidation('', usernameValidators);
     const bio = useInputValidation('');
-    const password = useStrongPassword('')
+    const password = useStrongPassword('');
+
     const dispatch = useDispatch();
 
     const avatar = useFileHandler("single");
 
-    const handleSignup = (e) => {
+    const handleSignup = async (e) => {
         e.preventDefault();
-    }
+
+        const formData = new FormData();
+        formData.append("avatar", avatar.file);
+        formData.append("name", name.value);
+        formData.append("bio", bio.value);
+        formData.append("username", username.value);
+        formData.append("password", password.value);
+
+       let config = {
+            withCredentials: true,
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        };
+
+        try {
+            const { data } = await axios.post(
+                `${server}/api/v1/user/register`,
+                formData,
+                config
+            );
+            dispatch(userExists(true));
+            toast.success(data.message)
+        } catch (error) {
+            toast.error(error?.response?.data?.message || "Something Went Wrong...");
+        };
+
+    };
+    
 
     const handleLogin = async (e) => {
         e.preventDefault();
 
-        const config = {
+        let config = {
             withCredentials: true,
             headers: {
                 "Content-Type": "application/json",
@@ -52,7 +81,7 @@ const Login = () => {
             toast.success(data.message)
 
         } catch (error) {
-           toast.error(error?.response?.data?.message || "Something Went Wrong...");
+            toast.error(error?.response?.data?.message || "Something Went Wrong...");
         }
 
 
