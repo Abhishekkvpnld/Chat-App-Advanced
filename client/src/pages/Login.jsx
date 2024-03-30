@@ -87,7 +87,8 @@ const Login = () => {
 
 
 
-    }
+    };
+
 
     return (
 
@@ -202,7 +203,7 @@ const Login = () => {
 
             </Paper>
         </Container>
-    )
-}
+    );
+};
 
 export default Login;

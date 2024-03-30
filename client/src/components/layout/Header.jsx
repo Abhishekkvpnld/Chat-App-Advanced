@@ -3,11 +3,12 @@ import { orange } from "../../constants/color";
 import React, { Suspense, lazy, useState } from 'react';
 import { Menu as MenuIcon, Search as SearchIcon, Add as AddIcon, Group as GroupIcon, Logout as LogoutIcon, Notifications as NotificationIcon } from "@mui/icons-material";
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import { server } from '../../constants/config';
 import { userNotExists } from '../../../redux/reducers/auth';
+import { setIsMobile, setIsSearch } from '../../../redux/reducers/misc';
 
 const Search = lazy(() => import('../specific/Search'));
 const Notification = lazy(() => import('../specific/Notification'));
@@ -15,25 +16,19 @@ const NewGroup = lazy(() => import('../specific/NewGroup'));
 
 const Header = () => {
 
-    const [isMobile, setIsmobile] = useState(false);
-    const [isSearch, setIsSearch] = useState(false);
     const [isNewGroup, setIsNewGroup] = useState(false);
     const [isNotification, setIsNotification] = useState(false);
 
+    const { isSearch } = useSelector((state) => state.misc);
     const Navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const handleMobile = () => {
-        setIsmobile((prev) => !prev)
-    }
-
-    const openSearch = () => {
-        setIsSearch((prev) => !prev)
-    }
+    const handleMobile = () => dispatch(setIsMobile(true));
+    const openSearch = () => dispatch(setIsSearch(true));
 
     const openNewGroup = () => {
         setIsNewGroup((prev) => !prev)
-    }
+    };
 
     const logoutHandler = async () => {
         console.log('logout');
@@ -52,7 +47,7 @@ const Header = () => {
         setIsNotification((prev) => !prev)
     };
 
-    const navigateToGroup = () => Navigate("/groups")
+    const navigateToGroup = () => Navigate("/groups");
     return (
         <>
             <Box sx={{ flexGrow: 1 }} height={"4rem"} >
