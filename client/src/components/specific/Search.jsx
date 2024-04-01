@@ -3,10 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { useInputValidation } from '6pp';
 import { Search as SearchIcon } from "@mui/icons-material";
 import UserItem from '../shared/userItem';
-import { SampleUsers } from '../../constants/SampleChat';
 import { useDispatch, useSelector } from 'react-redux';
 import { setIsSearch } from '../../../redux/reducers/misc';
-import { useLazySearchUserQuery } from '../../../redux/api/api';
+import { useLazySearchUserQuery, useSendFriendRequestMutation } from '../../../redux/api/api';
+import { useAsyncMutation } from '../../hooks/hook';
 
 
 const Search = () => {
@@ -14,15 +14,19 @@ const Search = () => {
   const { isSearch } = useSelector((state) => state.misc);
 
   const [searchUser] = useLazySearchUserQuery();
+  const [sendFriendRequest, isLoadingSendFriendRequest] = useAsyncMutation(useSendFriendRequestMutation);
+
   const dispatch = useDispatch();
   const search = useInputValidation('');
 
-  let isLoadingSendFriendRequest = false;
   const [user, setUser] = useState([]);
 
-  const addFriendHandler = (id) => {
-    console.log(id);
+
+
+  const addFriendHandler = async (id) => {
+    await sendFriendRequest("Sending frined request...", { userId: id })
   };
+
 
   const searchCloseHandler = () => {
     dispatch(setIsSearch(false));
@@ -31,15 +35,17 @@ const Search = () => {
 
   useEffect(() => {
     const timeOutId = setTimeout(() => {
-     searchUser(search.value)
-     .then(({data})=>setUser(data.users))
-     .catch((e)=>console.log(e))
+      searchUser(search.value)
+        .then(({ data }) => setUser(data.users))
+        .catch((e) => console.log(e))
     }, 1000)
 
     return () => {
-      clearTimeout(timeOutId);  
+      clearTimeout(timeOutId);
     }
   }, [search.value]);
+
+
 
   return (
     <Dialog open={isSearch} onClose={searchCloseHandler}>

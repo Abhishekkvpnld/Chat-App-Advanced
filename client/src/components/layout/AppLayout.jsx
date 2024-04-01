@@ -4,13 +4,11 @@ import Footer from './Footer';
 import Title from '../shared/Title';
 import { Drawer, Grid, Skeleton } from '@mui/material';
 import ChatList from '../specific/ChatList';
-import { SampleChat } from '../../constants/SampleChat';
 import { useParams } from 'react-router-dom';
 import Profile from '../specific/Profile';
 import { useMyChatsQuery } from '../../../redux/api/api';
 import { useDispatch, useSelector } from 'react-redux';
 import { setIsMobile } from '../../../redux/reducers/misc';
-import toast from 'react-hot-toast';
 import { useErrors } from '../../hooks/hook';
 
 const AppLayout = (WrappedComponent) => {
@@ -20,7 +18,8 @@ const AppLayout = (WrappedComponent) => {
     const params = useParams();
     const chatId = params.chatId;
 
-    const { isMobile } = useSelector((state) => state.misc)
+    const { isMobile } = useSelector((state) => state.misc);
+    const { user } = useSelector((state) => state.auth);
 
     const { isLoading, data, isError, error, refetch } = useMyChatsQuery("");
 
@@ -87,7 +86,7 @@ const AppLayout = (WrappedComponent) => {
               padding: "2rem", bgcolor: "rgba(0,0,0,0.85)"
             }}
           >
-            <Profile />
+            <Profile user={user}/>
           </Grid>
 
         </Grid>

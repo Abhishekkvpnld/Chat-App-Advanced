@@ -26,8 +26,6 @@ function App() {
 
   const { user, loader } = useSelector((state) => state.auth);
 
-  console.log("user",user,loader);
-
   const dispatch = useDispatch();
 
   useEffect(() => {

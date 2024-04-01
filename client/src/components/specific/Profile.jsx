@@ -1,14 +1,18 @@
 import { Avatar, Stack, Typography } from '@mui/material';
 import React from 'react';
-import {Face as FaceIcon,
-     AlternateEmail as UsernameIcon,
-      CalendarMonth as CalendarIcon} from "@mui/icons-material";
+import {
+    Face as FaceIcon,
+    AlternateEmail as UsernameIcon,
+    CalendarMonth as CalendarIcon
+} from "@mui/icons-material";
 import moment from "moment";
+import { transformImage } from '../../lib/Features';
 
-const Profile = () => {
+const Profile = ({ user }) => {
     return (
         <Stack spacing={"2rem"} direction={"column"} alignItems={"center"} >
             <Avatar
+                src={transformImage(user?.avatar?.url)}
                 sx={{
                     width: 200,
                     height: 200,
@@ -17,10 +21,10 @@ const Profile = () => {
                     border: "5px solid white"
                 }}
             />
-            <ProfiileCard heading={"Bio"} text={"dfjsfkfsfs sfdlslfsf"} />
-            <ProfiileCard heading={"Username"} text={"Abhi"} Icon={<UsernameIcon/>}/>
-            <ProfiileCard heading={"Name"} text={"Abhishek"} Icon={<FaceIcon/>} />
-            <ProfiileCard heading={"Joined"} text={moment('2024-01-09T18:30:00.000Z').fromNow()} Icon={<CalendarIcon/>}/>
+            <ProfiileCard heading={"Bio"} text={user?.bio} />
+            <ProfiileCard heading={"Username"} text={user?.username} Icon={<UsernameIcon />} />
+            <ProfiileCard heading={"Name"} text={user?.name} Icon={<FaceIcon />} />
+            <ProfiileCard heading={"Joined"} text={moment(user?.createdAt).fromNow()} Icon={<CalendarIcon />} />
         </Stack>
     )
 }
@@ -34,12 +38,12 @@ const ProfiileCard = ({ text, Icon, heading }) => (
         textAlign={"center"}
     >
 
-        { Icon && Icon }
+        {Icon && Icon}
 
-<Stack>
-    <Typography variant='body2'>{text}</Typography>
-    <Typography color={"grey"} variant='caption'>{heading}</Typography>
-</Stack>
+        <Stack>
+            <Typography variant='body2'>{text}</Typography>
+            <Typography color={"grey"} variant='caption'>{heading}</Typography>
+        </Stack>
 
     </Stack>)
 

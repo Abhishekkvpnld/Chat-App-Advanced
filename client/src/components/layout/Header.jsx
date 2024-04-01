@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 import axios from 'axios';
 import { server } from '../../constants/config';
 import { userNotExists } from '../../../redux/reducers/auth';
-import { setIsMobile, setIsSearch } from '../../../redux/reducers/misc';
+import { setIsMobile, setIsNotification, setIsSearch } from '../../../redux/reducers/misc';
 
 const Search = lazy(() => import('../specific/Search'));
 const Notification = lazy(() => import('../specific/Notification'));
@@ -17,9 +17,8 @@ const NewGroup = lazy(() => import('../specific/NewGroup'));
 const Header = () => {
 
     const [isNewGroup, setIsNewGroup] = useState(false);
-    const [isNotification, setIsNotification] = useState(false);
 
-    const { isSearch } = useSelector((state) => state.misc);
+    const { isSearch, isNotification } = useSelector((state) => state.misc);
     const Navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -43,33 +42,27 @@ const Header = () => {
         };
     };
 
-    const openNotification = () => {
-        setIsNotification((prev) => !prev)
-    };
+    const openNotification = () => dispatch(setIsNotification(true));
 
     const navigateToGroup = () => Navigate("/groups");
+
+
     return (
         <>
             <Box sx={{ flexGrow: 1 }} height={"4rem"} >
 
-                <AppBar
-                    position='static' sx={{ bgcolor: orange }}
-                >
+                <AppBar position='static' sx={{ bgcolor: orange }}>
                     <Toolbar>
 
                         <Typography
                             variant='h6'
-                            sx={{
-                                display: { xs: "none", sm: 'block' }
-                            }}
+                            sx={{ display: { xs: "none", sm: 'block' } }}
                         >
                             chat app
                         </Typography>
 
 
-                        <Box sx={{
-                            display: { xs: "block", sm: 'none' }
-                        }}>
+                        <Box sx={{ display: { xs: "block", sm: 'none' } }}>
                             <IconButton color='inherit' onClick={handleMobile}>
                                 <MenuIcon />
                             </IconButton>
@@ -84,8 +77,8 @@ const Header = () => {
                             <BtnIcon title={"Search"} onClick={openSearch} icon={<SearchIcon />} />
                             <BtnIcon title={"New Group"} onClick={openNewGroup} icon={<AddIcon />} />
                             <BtnIcon title={"Manage Group"} onClick={navigateToGroup} icon={<GroupIcon />} />
-                            <BtnIcon title={"Logout"} onClick={logoutHandler} icon={<LogoutIcon />} />
                             <BtnIcon title={"Notifications"} onClick={openNotification} icon={<NotificationIcon />} />
+                            <BtnIcon title={"Logout"} onClick={logoutHandler} icon={<LogoutIcon />} />
 
                         </Box>
 
