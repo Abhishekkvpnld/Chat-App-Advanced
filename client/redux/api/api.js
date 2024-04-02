@@ -37,15 +37,15 @@ const api = createApi({
 
         getNotifications: builder.query({
             query: () => ({
-                url: `user/notifications`,
-                credentials: "include"
+              url: `user/notifications`,
+              credentials: "include",
             }),
-            keepUnusedDataFor: 0
-        }),
+            keepUnusedDataFor: 0,
+          }),
 
        acceptFriendRequest: builder.mutation({
             query: (data) => ({
-                url: "/user/acceptrequest",
+                url: `user/acceptrequest`,
                 method: "PUT",
                 credentials: "include",
                 body: data

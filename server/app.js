@@ -7,7 +7,8 @@ import { Server } from "socket.io";
 import http from 'http';
 import { v4 as uuid } from "uuid";
 import cors from "cors";
-import {v2 as cloudinary} from "cloudinary";
+import { v2 as cloudinary } from "cloudinary";
+import { corsOptions } from "./constants/config.js";
 
 // import { createUser } from "./seeders/user.js";
 // import { createGroupChat, createMessagesInAChat, createSingleChats, } from "./seeders/chat.js";
@@ -31,9 +32,9 @@ const MONGO_URI = process.env.MONGO_URI;
 connectDB(MONGO_URI);
 
 cloudinary.config({
-    cloud_name:process.env.CLOUDINARY_CLOUD_NAME,
-    api_key:process.env.CLOUDINARY_API_KEY,
-    api_secret:process.env.CLOUDINARY_API_SECRET
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
 export const adminSecretKey = process.env.ADMIN_SECRET_KEY || "adminauthentication";
@@ -46,15 +47,12 @@ export const userSocketIDs = new Map();
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, {});
+const io = new Server(server, { cors: corsOptions });
 
 //middlewares
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({
-    origin:["http://localhost:5173","http://localhost:4173",process.env.CLIENT_URL],
-    credentials:true
-}));
+app.use(cors(corsOptions));
 
 
 app.get("/", (req, res) => {
@@ -66,7 +64,7 @@ app.use("/api/v1/chat", chatRoute);
 app.use("/api/v1/admin", adminRoute);
 
 //socket middleware
-io.use((socket, next) => { });
+// io.use((socket, next) => { });
 
 //socket.io connection
 io.on("connection", (socket) => {

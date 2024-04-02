@@ -41,22 +41,24 @@ export const getMyChats = tryCatch(async (req, res, next) => {
         return {
             _id,
             groupChat,
-            avatar: groupChat ? members.slice(0, 3).map(({ avatar }) => avatar.url) : [getOtherMember.avatar.url],
-            name: groupChat ? name : getOtherMember.name,
+            avatar: groupChat
+              ? members.slice(0, 3).map(({ avatar }) => avatar.url)
+              : [otherMember.avatar.url],
+            name: groupChat ? name : otherMember.name,
             members: members.reduce((prev, curr) => {
-                if (curr._id.toString() !== req.user.toString()) {
-                    prev.push(curr._id);
-                }
-                return prev;
-            }, [])
-
-        }
+              if (curr._id.toString() !== req.user.toString()) {
+                prev.push(curr._id);
+              }
+              return prev;
+            }, []),
+          };
     });
+    console.log('transformchat',transformChat);
 
-    return res.status(201).json({
+    return res.status(200).json({
         success: true,
-        message: transformChat,
-    });
+        chats: transformChat,
+      });
 });
 
 

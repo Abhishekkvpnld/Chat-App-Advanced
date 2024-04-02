@@ -17,12 +17,11 @@ const Notification = () => {
   const dispatch = useDispatch();
 
   const { isLoading, data, error, isError } = useGetNotificationsQuery();
-  console.log(data);
+  // console.log("data", data, "error", error, "isError", isError); 
 
   const [acceptRequest] = useAcceptFriendRequestMutation();
 
   const friendRequestHandler = async ({ _id, accept }) => {
-    //add friend request handler
 
     dispatch(setIsNotification(false));
 
@@ -31,17 +30,15 @@ const Notification = () => {
       const res = await acceptRequest({ requestId: _id, accept });
 
       if (res.data?.success) {
-
         console.log("use socket");
         toast.success(res.data.message);
 
       } else {
         toast.error(res.data?.error || "Something Went Wrong...")
-      }
+      };
 
     } catch (error) {
       toast.error("Something Went Wrong...");
-      console.log(error);
     }
   };
 
@@ -90,7 +87,7 @@ const NotificationItems = memo(({ sender, _id, handler }) => {
         width={"100%"}
         spacing={"1rem"}
       >
-        <Avatar />
+        <Avatar src={avatar} />
         <Typography
           variant='body1'
           sx={{

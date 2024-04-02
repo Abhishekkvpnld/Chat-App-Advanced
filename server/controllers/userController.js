@@ -111,7 +111,7 @@ export const searchUser = tryCatch(async (req, res) => {
 export const sendFriendRequest = tryCatch(async (req, res, next) => {
 
     const { userId } = req.body;
-
+console.log("usserId",userId);
     const request = await Request.findOne({
         $or: [
             { sender: req.user, receiver: userId },
@@ -138,9 +138,9 @@ export const sendFriendRequest = tryCatch(async (req, res, next) => {
 export const acceptFriendRequest = tryCatch(async (req, res, next) => {
 
     const { requestId, accept } = req.body;
+    console.log("req:" ,req.body);
 
     const request = await Request.findById(requestId).populate("sender", "name").populate("receiver", "name");
-
     if (!request)
         return next(new ErrorHandler("Request Not Found", 404));
 
@@ -152,8 +152,8 @@ export const acceptFriendRequest = tryCatch(async (req, res, next) => {
         res.status(200).json({
             success: true,
             message: "Friend Request Rejected"
-        })
-    }
+        });
+    };
 
     const members = [request.sender._id, request.receiver._id];
 
@@ -178,7 +178,7 @@ export const acceptFriendRequest = tryCatch(async (req, res, next) => {
 export const getMyNotifications = tryCatch(async (req, res, next) => {
     const requests = await Request.find({ receiver: req.user }).populate("sender", "name avatar");
 
-    const allRequests = request.map((_id, sender) => ({
+    const allRequests = requests.map(({ _id, sender }) => ({
         _id,
         sender: {
             _id: sender._id,
@@ -189,7 +189,7 @@ export const getMyNotifications = tryCatch(async (req, res, next) => {
     return res.status(200).json({
         success: true,
         allRequests
-    })
+    });
 
 });
 
@@ -231,9 +231,9 @@ export const getMyFriends = tryCatch(async (req, res, next) => {
         return res.status(200).json({
             success: true,
             friends
-        })
+        });
 
-    }
+    };
 
-})
+});
 
