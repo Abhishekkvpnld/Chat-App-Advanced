@@ -111,7 +111,6 @@ export const searchUser = tryCatch(async (req, res) => {
 export const sendFriendRequest = tryCatch(async (req, res, next) => {
 
     const { userId } = req.body;
-console.log("usserId",userId);
     const request = await Request.findOne({
         $or: [
             { sender: req.user, receiver: userId },

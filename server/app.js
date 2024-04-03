@@ -20,6 +20,7 @@ import adminRoute from "./routes/adminRoute.js";
 import { NEW_MESSAGE, NEW_MESSAGE_ALLERT } from "./constants/events.js";
 import { getSockets } from "./lib/helper.js";
 import { Message } from "./models/messageModel.js";
+import { socketAuthenticator } from "./middlewares/auth.js";
 
 dotenv.config();
 
@@ -64,14 +65,17 @@ app.use("/api/v1/chat", chatRoute);
 app.use("/api/v1/admin", adminRoute);
 
 //socket middleware
-// io.use((socket, next) => { });
+io.use((socket, next) => { 
+    cookieParser()(
+        socket.request,
+        socket.request.res,
+        async (err)=> await socketAuthenticator(err,socket,next)
+    );
+});
 
 //socket.io connection
 io.on("connection", (socket) => {
-    const user = {
-        _id: "sddadd",
-        name: "dasdada"
-    };
+    const user = socket.user;
 
     userSocketIDs.set(user._id.toString(), socket.id);
 
@@ -95,6 +99,7 @@ io.on("connection", (socket) => {
             sender: user._id,
             chat: chatId
         };
+
 
         const membersSocket = getSockets(members);
         io.to(membersSocket).emit(NEW_MESSAGE, {

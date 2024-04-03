@@ -19,8 +19,8 @@ const AppLayout = (WrappedComponent) => {
     const params = useParams();
     const chatId = params.chatId;
 
-    // const socket = getSocket();
-    // console.log(socket);
+    const socket = getSocket();
+
 
     const { isMobile } = useSelector((state) => state.misc);
     const { user } = useSelector((state) => state.auth);
@@ -51,6 +51,7 @@ const AppLayout = (WrappedComponent) => {
                 chats={data?.chats}
                 chatId={chatId}
                 handleDeleteChat={handleDeleteChat}
+               
               />
             </Drawer>
           )
@@ -78,7 +79,7 @@ const AppLayout = (WrappedComponent) => {
             item
             xs={12} sm={8} md={5} lg={6}
           >
-            <WrappedComponent {...props} />
+            <WrappedComponent {...props} chatId={chatId}  user={user}/>
           </Grid >
 
           <Grid item

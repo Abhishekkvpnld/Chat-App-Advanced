@@ -38,6 +38,9 @@ export const getMyChats = tryCatch(async (req, res, next) => {
     const chats = await Chat.find({ members: req.user }).populate("members", "name avatar");
 
     const transformChat = chats.map(({ _id, name, members, groupChat }) => {
+
+        const otherMember = getOtherMember(members, req.user);
+        
         return {
             _id,
             groupChat,

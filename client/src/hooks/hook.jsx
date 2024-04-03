@@ -38,11 +38,27 @@ export const useAsyncMutation = (mutationHook) => {
             }
         } catch (error) {
 
-            toast.error("Something Went Wrong...",{id:toastId})
+            toast.error("Something Went Wrong...", { id: toastId })
         } finally {
             setIsLoading(false);
         }
 
     };
-    return [executeMutation,isLoading,data];
+    return [executeMutation, isLoading, data];
+};
+
+
+
+export const useSocketEvents = (socket, handler) => {
+    useEffect(() => {
+        Object.entries(handler).forEach(([event,handler]) => {
+            socket.on(event,handler);
+        });
+
+        return () => {
+            Object.entries(handler).forEach(([event,handler]) => {
+                socket.off(event,handler);
+            });
+        };
+    }, [socket,handler]);
 };

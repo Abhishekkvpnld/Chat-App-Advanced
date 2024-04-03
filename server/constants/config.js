@@ -8,3 +8,5 @@ export const corsOptions = {
     Methods: [ "GET","POST","PUT","DELETE"],
     credentials: true
 };
+
+export const chatToken = "chat-token";
