@@ -13,7 +13,7 @@ const SocketProvider = ({ children }) => {
     const socket = useMemo(
         () => io(server, { withCredentials: true }),
         []);
-    console.log("socket",socket);
+
     return (
         <socketContext.Provider value={socket}>{children}</socketContext.Provider>);
 };

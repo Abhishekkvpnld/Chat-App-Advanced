@@ -2,11 +2,11 @@ import { tryCatch } from "../middlewares/error.js";
 import { ErrorHandler } from "../utils/utility.js";
 import { Chat } from "../models/chatModel.js";
 import emitEvent from "../utils/emitEvent.js";
-import { ALERT, NEW_ATTACHMENT, NEW_MESSAGE_ALLERT, REFETCH_CHAT } from "../constants/events.js";
+import { ALERT, NEW_MESSAGE, NEW_MESSAGE_ALLERT, REFETCH_CHAT } from "../constants/events.js";
 import { getOtherMember } from "../lib/helper.js";
 import { User } from "../models/userModel.js";
 import { Message } from "../models/messageModel.js";
-import {deleteFileFromCloudinary} from "../utils/cloudinary.js";
+import { deleteFileFromCloudinary, uploadFilesToCloudinary } from "../utils/cloudinary.js";
 
 
 
@@ -31,7 +31,7 @@ export const newGroupChat = tryCatch(async (req, res, next) => {
         success: true,
         message: "Group Created..."
     });
-})
+});
 
 export const getMyChats = tryCatch(async (req, res, next) => {
 
@@ -40,28 +40,27 @@ export const getMyChats = tryCatch(async (req, res, next) => {
     const transformChat = chats.map(({ _id, name, members, groupChat }) => {
 
         const otherMember = getOtherMember(members, req.user);
-        
+
         return {
             _id,
             groupChat,
             avatar: groupChat
-              ? members.slice(0, 3).map(({ avatar }) => avatar.url)
-              : [otherMember.avatar.url],
+                ? members.slice(0, 3).map(({ avatar }) => avatar.url)
+                : [otherMember.avatar.url],
             name: groupChat ? name : otherMember.name,
             members: members.reduce((prev, curr) => {
-              if (curr._id.toString() !== req.user.toString()) {
-                prev.push(curr._id);
-              }
-              return prev;
+                if (curr._id.toString() !== req.user.toString()) {
+                    prev.push(curr._id);
+                }
+                return prev;
             }, []),
-          };
+        };
     });
-    console.log('transformchat',transformChat);
 
     return res.status(200).json({
         success: true,
         chats: transformChat,
-      });
+    });
 });
 
 
@@ -135,7 +134,7 @@ export const addMembers = tryCatch(async (req, res, next) => {
         message: "Members added successfully"
 
     })
-})
+});
 
 
 export const removeMembers = tryCatch(async (req, res, next) => {
@@ -224,7 +223,7 @@ export const leaveGroup = tryCatch(async (req, res, next) => {
         message: "Member removed successfully"
     })
 
-})
+});
 
 
 export const sendAttachments = tryCatch(async (req, res, next) => {
@@ -249,13 +248,13 @@ export const sendAttachments = tryCatch(async (req, res, next) => {
 
 
     //Upload file here
-    const attachments = [];
+    const attachments = await uploadFilesToCloudinary(files);
 
     const messageForDB = {
         content: "",
-        attachments,
         sender: me._id,
-        chat: chatId
+        chat: chatId,
+        attachment: attachments,
     };
 
     const messageForRealTime = {
@@ -269,7 +268,8 @@ export const sendAttachments = tryCatch(async (req, res, next) => {
 
     const message = await Message.create(messageForDB);
 
-    emitEvent(req, NEW_ATTACHMENT, chat.members, {
+    //Emitting Events
+    emitEvent(req, NEW_MESSAGE, chat.members, {
         message: messageForRealTime,
         chatId
     });
@@ -279,8 +279,8 @@ export const sendAttachments = tryCatch(async (req, res, next) => {
     res.status(200).json({
         success: true,
         message
-    })
-})
+    });
+});
 
 
 export const getChatDetails = tryCatch(async (req, res, next) => {
@@ -315,7 +315,7 @@ export const getChatDetails = tryCatch(async (req, res, next) => {
         })
 
     }
-})
+});
 
 
 export const renameGroup = tryCatch(async (req, res, next) => {
@@ -377,7 +377,7 @@ export const getMessages = tryCatch(async (req, res, next) => {
 
 
 
-})
+});
 
 
 export const deleteChat = tryCatch(async (req, res, next) => {

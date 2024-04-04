@@ -17,6 +17,7 @@ const api = createApi({
             providesTags: ["Chat"],
         }),
 
+
         searchUser: builder.query({
             query: (name) => ({
                 url: `user/search?name=${name}`,
@@ -25,15 +26,17 @@ const api = createApi({
             providesTags: ["User"]
         }),
 
+
         sendFriendRequest: builder.mutation({
             query: (data) => ({
-                url: "/user/sendrequest",
+                url: "user/sendrequest",
                 method: "PUT",
                 credentials: "include",
                 body: data
             }),
             invalidatesTags: ["User"]
         }),
+
 
         getNotifications: builder.query({
             query: () => ({
@@ -42,6 +45,7 @@ const api = createApi({
             }),
             keepUnusedDataFor: 0,
         }),
+
 
         acceptFriendRequest: builder.mutation({
             query: (data) => ({
@@ -53,27 +57,36 @@ const api = createApi({
             invalidatesTags: ["Chat"]
         }),
 
+
         chatDetails: builder.query({
             query: ({ chatId, populate = false }) => {
-
                 let url = `chat/${chatId}`;
                 if (populate) url += "?populate=true";
-
                 return {
                     url,
                     credentials: "include"
-                }
+                };
             },
             providesTags: ["Chat"]
         }),
 
+
         getMessages: builder.query({
             query: ({ chatId, page }) => ({
-
                 url: `chat/messages/${chatId}?page=${page}`,
                 credentials: "include"
             }),
             providesTags: ["Message"]
+        }),
+
+
+        sendAttachments: builder.mutation({
+            query: (data) => ({
+                url: "chat/messages",
+                method: "POST",
+                credentials: "include",
+                body: data
+            }),
         }),
 
     })
@@ -90,4 +103,5 @@ export const {
     useAcceptFriendRequestMutation,
     useChatDetailsQuery,
     useGetMessagesQuery,
+    useSendAttachmentsMutation
 } = api;

@@ -7,9 +7,9 @@ import RenderAttachment from './RenderAttachment.jsx';
 
 const MessageComponent = ({ message, user }) => {
 
-    const { sender, content, attachments = [], createdAt } = message;
+    const { sender, content, attachment = [], createdAt } = message;
     const sameSender = sender?._id === user?._id;
-    console.log(attachments);
+
     const timeAgo = moment(createdAt).fromNow()
 
     return (
@@ -38,7 +38,7 @@ const MessageComponent = ({ message, user }) => {
             {
                 // attachments > 0 && 
                 (
-                    attachments.map((attachment, index) => {
+                    attachment.map((attachment, index) => {
                         const url = attachment.url;
                         const file = fileFormat(url);
                         return (<Box key={index}>

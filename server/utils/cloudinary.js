@@ -6,7 +6,7 @@ import { getBase64 } from "../lib/helper.js";
 export const deleteFileFromCloudinary = async (public_ids) => {
     // delete files from cloudinary
 
-}
+};
 
 export const uploadFilesToCloudinary = async (files = []) => {
     const uploadPromises = files.map((file) => {
@@ -27,7 +27,6 @@ export const uploadFilesToCloudinary = async (files = []) => {
   
     try {
       const results = await Promise.all(uploadPromises);
-  
       const formattedResults = results.map((result) => ({
         public_id: result.public_id,
         url: result.secure_url,

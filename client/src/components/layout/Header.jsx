@@ -1,4 +1,4 @@
-import { AppBar, Backdrop, Box, IconButton, Toolbar, Tooltip, Typography } from '@mui/material';
+import { AppBar, Backdrop, Badge, Box, IconButton, Toolbar, Tooltip, Typography } from '@mui/material';
 import { orange } from "../../constants/color";
 import React, { Suspense, lazy, useState } from 'react';
 import { Menu as MenuIcon, Search as SearchIcon, Add as AddIcon, Group as GroupIcon, Logout as LogoutIcon, Notifications as NotificationIcon } from "@mui/icons-material";
@@ -19,6 +19,8 @@ const Header = () => {
     const [isNewGroup, setIsNewGroup] = useState(false);
 
     const { isSearch, isNotification } = useSelector((state) => state.misc);
+    const { notificationCount } = useSelector((state) => state.chat);
+
     const Navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -77,7 +79,7 @@ const Header = () => {
                             <BtnIcon title={"Search"} onClick={openSearch} icon={<SearchIcon />} />
                             <BtnIcon title={"New Group"} onClick={openNewGroup} icon={<AddIcon />} />
                             <BtnIcon title={"Manage Group"} onClick={navigateToGroup} icon={<GroupIcon />} />
-                            <BtnIcon title={"Notifications"} onClick={openNotification} icon={<NotificationIcon />} />
+                            <BtnIcon title={"Notifications"} onClick={openNotification} icon={<NotificationIcon />} value={1}/>
                             <BtnIcon title={"Logout"} onClick={logoutHandler} icon={<LogoutIcon />} />
 
                         </Box>
@@ -109,11 +111,13 @@ const Header = () => {
     )
 }
 
-const BtnIcon = ({ title, icon, onClick }) => {
+const BtnIcon = ({ title, icon, onClick, value }) => {
     return (
         <Tooltip title={title}>
             <IconButton color='inherit' size='large' onClick={onClick}>
-                {icon}
+                {
+                    value ? <Badge badgeContent={value} color='error'>{icon}</Badge> : icon
+                }
             </IconButton>
         </Tooltip>
     )

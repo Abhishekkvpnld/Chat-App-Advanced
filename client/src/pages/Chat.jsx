@@ -11,29 +11,45 @@ import { getSocket } from '../socket';
 import { NEW_MESSAGE } from '../../../server/constants/events';
 import { useChatDetailsQuery, useGetMessagesQuery } from '../../redux/api/api';
 import { useErrors, useSocketEvents } from '../hooks/hook';
+import { useInfiniteScrollTop } from "6pp";
+import { useDispatch } from 'react-redux';
+import { setIsFileMenu } from '../../redux/reducers/misc';
 
 
 
 const Chat = ({ chatId, user }) => {
 
-
+  const dispatch = useDispatch();
   const containerRef = useRef(null);
   const socket = getSocket();
 
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [page, setPage] = useState(1);
+  const [fileMenuAnchor,setFileMenuAnchor] = useState(null);
 
   const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId });
   const oldMessages = useGetMessagesQuery({ chatId, page });
-  console.log("oldmessages", oldMessages);
 
   const errors = [
     { isError: chatDetails.isError, error: chatDetails.error },
     { isError: oldMessages.isError, error: oldMessages.error }
   ];
 
+  const { data: allOldMessages, setData: setAllOldMessages } = useInfiniteScrollTop(
+    containerRef,
+    oldMessages.data?.totalPages,
+    page,
+    setPage,
+    oldMessages.data?.message
+  );
+
   const members = chatDetails?.data?.chat?.members;
+
+  const handleFileOpen = (e) => {
+    dispatch(setIsFileMenu(true));
+    setFileMenuAnchor(e.currentTarget);
+  };
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -55,7 +71,8 @@ const Chat = ({ chatId, user }) => {
 
   useErrors(errors);
 
-  // const allMessages = [...oldMessages.data.messages, ...messages];
+  const allMessages = [...allOldMessages, ...messages];
+
 
   return chatDetails.isLoading ? <Skeleton /> : (
     <Fragment>
@@ -66,20 +83,17 @@ const Chat = ({ chatId, user }) => {
         spacing={"1rem"}
         height={"90%"}
         bgcolor={greyColor}
+        sx={{
+          overflowX: "hidden",
+          overflowY: "auto",
+        }}
       >
 
-        {!oldMessages.isLoading &&
-          oldMessages.data?.message.map((i) =>
-            <MessageComponent user={user} message={i} key={i._id} />
-          )
-        }
-
         {
-          messages.map((i) =>
+          allMessages.map((i) =>
             <MessageComponent user={user} message={i} key={i._id} />
           )
         }
-
 
       </Stack>
 
@@ -97,6 +111,7 @@ const Chat = ({ chatId, user }) => {
             left: "1.5rem",
             rotate: "30deg"
           }}
+            onClick={handleFileOpen}
           >
             <FileIcon />
           </IconButton>
@@ -118,7 +133,9 @@ const Chat = ({ chatId, user }) => {
 
         </Stack>
       </form>
-      <FileMenu />
+
+      <FileMenu anchorE1={fileMenuAnchor} chatId={chatId}/>
+
     </Fragment>
   )
 }
