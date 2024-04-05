@@ -11,8 +11,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setIsMobile } from '../../../redux/reducers/misc';
 import { useErrors, useSocketEvents } from '../../hooks/hook';
 import { getSocket } from "../../socket"
-import { NEW_MESSAGE_ALLERT, NEW_REQUEST } from '../../../../server/constants/events';
-import { incrementNotification } from '../../../redux/reducers/chat';
+import { NEW_MESSAGE_ALLERT, NEW_REQUEST } from '../../constants/events';
+import { incrementNotification, setNewMessagesAlert } from '../../../redux/reducers/chat';
+import { getOrSaveFromStorage } from '../../lib/Features';
 
 const AppLayout = (WrappedComponent) => {
   return (props) => {
@@ -25,11 +26,17 @@ const AppLayout = (WrappedComponent) => {
 
 
     const { isMobile } = useSelector((state) => state.misc);
+    const { newMessagesAlert } = useSelector((state) => state.chat);
+
     const { user } = useSelector((state) => state.auth);
 
-    const { isLoading, data, isError, error, refetch } = useMyChatsQuery("");
+    const { isLoading, data, isError, error } = useMyChatsQuery("");
 
     useErrors([{ isError, error }]);
+
+    useEffect(() => {
+      getOrSaveFromStorage({ key: NEW_MESSAGE_ALLERT, value: newMessagesAlert });
+    }, [newMessagesAlert]);
 
 
     const handleDeleteChat = (e, _id, groupChat) => {
@@ -39,9 +46,12 @@ const AppLayout = (WrappedComponent) => {
 
     const handleMobileClose = () => dispatch(setIsMobile(false));
 
-    const newMessageAlertHandler = useCallback(() => {
+    const newMessageAlertHandler = useCallback((data) => {
 
-    }, []);
+      if (data.chatId === chatId) return;
+      dispatch(setNewMessagesAlert(data));
+
+    }, [chatId]);
 
     const newRequestHandler = useCallback(() => {
       dispatch(incrementNotification());
@@ -85,6 +95,7 @@ const AppLayout = (WrappedComponent) => {
                   chats={data?.chats}
                   chatId={chatId}
                   handleDeleteChat={handleDeleteChat}
+                  newMessagesAlert={newMessagesAlert}
                 />
               )
             }

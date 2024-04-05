@@ -7,6 +7,9 @@ import { Link } from "../components/styles/StyledComponents";
 import AvatarCard from "../components/shared/AvatarCard";
 import { SampleChat, SampleUsers } from "../constants/SampleChat";
 import UserItem from '../components/shared/userItem';
+import { useMyGroupsQuery } from '../../redux/api/api';
+import {useErrors} from "../hooks/hook";
+import {LayoutLoader} from "../components/layout/LayoutLoader";
 
 const ConfirmDeleteDialog = lazy(() => import("../components/dialogs/ConfirmDeleteDialog"));
 const AddMemberDialog = lazy(() => import("../components/dialogs/AddMemberDialog"));
@@ -18,15 +21,25 @@ const Groups = () => {
   const navigate = useNavigate();
   const chatId = useSearchParams()[0].get("group");
 
+  const myGroups = useMyGroupsQuery("");
+
+  console.log(myGroups.data);
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [groupName, setGroupName] = useState("");
   const [groupNameUpdatedValue, setGroupNameUpdatedValue] = useState("");
   const [confirmDeleteDialog, setConfirmDeleteDialog] = useState(false)
 
+  const errors = [
+    {
+      isError: myGroups.isError,
+      error: myGroups.error
+    }
+  ];
 
-
-  console.log(chatId);
+useErrors(errors);
+  
 
   const navigateBack = () => {
     navigate("/")
@@ -63,15 +76,15 @@ const Groups = () => {
 
   };
 
-  const removeMemberHandler = (id)=>{
-    console.log("removeMember",id );
+  const removeMemberHandler = (id) => {
+    console.log("removeMember", id);
   }
 
   useEffect(() => {
-   if(chatId){
-    setGroupName(`Group Name ${chatId}`);
-    setGroupNameUpdatedValue(`Group Name ${chatId}`);
-   }
+    if (chatId) {
+      setGroupName(`Group Name ${chatId}`);
+      setGroupNameUpdatedValue(`Group Name ${chatId}`);
+    }
     return () => {
       setGroupName("");
       setGroupNameUpdatedValue("");
@@ -175,7 +188,7 @@ const Groups = () => {
 
 
 
-  return (
+  return myGroups.isLoading ? <LayoutLoader/> : (
     <Grid container height={"100vh"}>
       <Grid
         item
@@ -229,17 +242,17 @@ const Groups = () => {
           >
             {/* Members Card */}
 
-{
-  SampleUsers.map((i)=>(
-    <UserItem key={i._id} user={i} isAdded styling={{
-      boxShadow: "0 0 0.5rem rgba(0, 0, 0, 0.2)",
-      padding:"1rem 2rem",
-      borderRadius:"1rem"
-    }}
-    handler={removeMemberHandler}
-    />
-  ))
-}
+            {
+              SampleUsers.map((i) => (
+                <UserItem key={i._id} user={i} isAdded styling={{
+                  boxShadow: "0 0 0.5rem rgba(0, 0, 0, 0.2)",
+                  padding: "1rem 2rem",
+                  borderRadius: "1rem"
+                }}
+                  handler={removeMemberHandler}
+                />
+              ))
+            }
 
           </Stack>
 

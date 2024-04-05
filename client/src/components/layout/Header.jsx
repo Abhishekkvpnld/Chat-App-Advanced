@@ -8,7 +8,8 @@ import toast from 'react-hot-toast';
 import axios from 'axios';
 import { server } from '../../constants/config';
 import { userNotExists } from '../../../redux/reducers/auth';
-import { setIsMobile, setIsNotification, setIsSearch } from '../../../redux/reducers/misc';
+import { setIsMobile, setIsNewGroup, setIsNotification, setIsSearch } from '../../../redux/reducers/misc';
+import { resetNotificationCount } from '../../../redux/reducers/chat';
 
 const Search = lazy(() => import('../specific/Search'));
 const Notification = lazy(() => import('../specific/Notification'));
@@ -16,9 +17,8 @@ const NewGroup = lazy(() => import('../specific/NewGroup'));
 
 const Header = () => {
 
-    const [isNewGroup, setIsNewGroup] = useState(false);
 
-    const { isSearch, isNotification } = useSelector((state) => state.misc);
+    const { isSearch, isNotification,isNewGroup } = useSelector((state) => state.misc);
     const { notificationCount } = useSelector((state) => state.chat);
 
     const Navigate = useNavigate();
@@ -28,11 +28,10 @@ const Header = () => {
     const openSearch = () => dispatch(setIsSearch(true));
 
     const openNewGroup = () => {
-        setIsNewGroup((prev) => !prev)
+        dispatch(setIsNewGroup(true))
     };
 
     const logoutHandler = async () => {
-        console.log('logout');
         try {
 
             const { data } = await axios.get(`${server}/api/v1/user/logout`, { withCredentials: true });
@@ -44,7 +43,10 @@ const Header = () => {
         };
     };
 
-    const openNotification = () => dispatch(setIsNotification(true));
+    const openNotification = () =>{ 
+        dispatch(setIsNotification(true));
+        dispatch(resetNotificationCount())
+    };
 
     const navigateToGroup = () => Navigate("/groups");
 
@@ -79,7 +81,7 @@ const Header = () => {
                             <BtnIcon title={"Search"} onClick={openSearch} icon={<SearchIcon />} />
                             <BtnIcon title={"New Group"} onClick={openNewGroup} icon={<AddIcon />} />
                             <BtnIcon title={"Manage Group"} onClick={navigateToGroup} icon={<GroupIcon />} />
-                            <BtnIcon title={"Notifications"} onClick={openNotification} icon={<NotificationIcon />} value={1}/>
+                            <BtnIcon title={"Notifications"} onClick={openNotification} icon={<NotificationIcon />} value={notificationCount}/>
                             <BtnIcon title={"Logout"} onClick={logoutHandler} icon={<LogoutIcon />} />
 
                         </Box>

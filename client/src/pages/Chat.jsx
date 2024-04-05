@@ -14,6 +14,9 @@ import { useErrors, useSocketEvents } from '../hooks/hook';
 import { useInfiniteScrollTop } from "6pp";
 import { useDispatch } from 'react-redux';
 import { setIsFileMenu } from '../../redux/reducers/misc';
+import { removeNewMessageAlert } from '../../redux/reducers/chat';
+import { ALERT, START_TYPING, STOP_TYPING } from '../constants/events';
+import { TypingLoader } from '../components/layout/LayoutLoader';
 
 
 
@@ -26,7 +29,13 @@ const Chat = ({ chatId, user }) => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [page, setPage] = useState(1);
-  const [fileMenuAnchor,setFileMenuAnchor] = useState(null);
+  const [fileMenuAnchor, setFileMenuAnchor] = useState(null);
+
+  const [IamTyping, setIamTyping] = useState(false);
+  const [userTyping, setUserTyping] = useState(false);
+
+  const typingTimeout = useRef(null);
+  const bottomRef = useRef(null);
 
   const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId });
   const oldMessages = useGetMessagesQuery({ chatId, page });
@@ -46,6 +55,23 @@ const Chat = ({ chatId, user }) => {
 
   const members = chatDetails?.data?.chat?.members;
 
+  const messageOnChange = (e) => {
+    setMessage(e.target.value);
+
+    if (!IamTyping) {
+      socket.emit(START_TYPING, { members, chatId });
+      setIamTyping(true)
+    }
+
+    if (typingTimeout.current) clearTimeout(typingTimeout.current);
+
+    typingTimeout.current = setTimeout(() => {
+      socket.emit(STOP_TYPING, { members, chatId });
+      setIamTyping(false);
+    }, [2000]);
+
+  };
+
   const handleFileOpen = (e) => {
     dispatch(setIsFileMenu(true));
     setFileMenuAnchor(e.currentTarget);
@@ -61,11 +87,69 @@ const Chat = ({ chatId, user }) => {
     setMessage("")
   };
 
-  const newMessageHandler = useCallback((data) => {
-    setMessages((prev) => [...prev, data.message])
-  });
+  useEffect(() => {
 
-  const eventHandler = { [NEW_MESSAGE]: newMessageHandler };
+    dispatch(removeNewMessageAlert(chatId));
+
+    return () => {
+      setMessages([]);
+      setMessage("");
+      setAllOldMessages([]);
+      setPage(1);
+    }
+
+  }, [chatId]);
+
+
+  useEffect(() => {
+    if (bottomRef.current) bottomRef.current.scrollIntoView({
+      behavior: "smooth"
+    });
+
+  }, [messages])
+
+
+  const newMessageHandler = useCallback((data) => {
+    if (data.chatId !== chatId) return;
+    setMessages((prev) => [...prev, data.message])
+
+  }, [chatId]);
+
+
+  const startTypingListner = useCallback((data) => {
+    if (data.chatId !== chatId) return;
+    setUserTyping(true);
+  }, [chatId]);
+
+
+  const stopTypingListner = useCallback((data) => {
+    if (data.chatId !== chatId) return;
+    setUserTyping(false);
+  }, [chatId]);
+
+
+const alertListner = useCallback((content)=>{
+const messageForAlert = {
+  content,
+  sender:{
+    _id:"dsffsffgfgfdgggfg",
+    name:"admin"
+  },
+  chat:chatId,
+  createdAt:new Date().toISOString()
+}
+
+setMessages((prev)=>[...prev,messageForAlert]);
+
+},[chatId]);
+
+
+  const eventHandler = {
+    [ALERT]: alertListner,
+    [NEW_MESSAGE]: newMessageHandler,
+    [START_TYPING]: startTypingListner,
+    [STOP_TYPING]: stopTypingListner
+  };
 
   useSocketEvents(socket, eventHandler);
 
@@ -95,6 +179,11 @@ const Chat = ({ chatId, user }) => {
           )
         }
 
+        {
+          userTyping && <TypingLoader />
+        }
+        <div ref={bottomRef} />
+
       </Stack>
 
       <form style={{ height: "10%" }} onSubmit={submitHandler}>
@@ -116,7 +205,7 @@ const Chat = ({ chatId, user }) => {
             <FileIcon />
           </IconButton>
 
-          <InputBox placeholder='Type Message Here...' value={message} onChange={(e) => setMessage(e.target.value)} />
+          <InputBox placeholder='Type Message Here...' value={message} onChange={messageOnChange} />
 
           <IconButton type='submit' sx={{
             rotate: "-30deg",
@@ -134,7 +223,7 @@ const Chat = ({ chatId, user }) => {
         </Stack>
       </form>
 
-      <FileMenu anchorE1={fileMenuAnchor} chatId={chatId}/>
+      <FileMenu anchorE1={fileMenuAnchor} chatId={chatId} />
 
     </Fragment>
   )

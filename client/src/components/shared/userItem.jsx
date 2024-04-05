@@ -16,7 +16,7 @@ const userItem = ({ user, handler, handlerIsLoading, isAdded = false,styling={} 
                 spacing={"1rem"}
                 {...styling}
             >
-                <Avatar src={transformImage(avatar)}/>
+                <Avatar src={transformImage(avatar[0])}/>
                 <Typography
                     variant='body1'
                     sx={{

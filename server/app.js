@@ -17,7 +17,7 @@ import { corsOptions } from "./constants/config.js";
 import chatRoute from "./routes/chatRoute.js";
 import userRoute from "./routes/userRoute.js";
 import adminRoute from "./routes/adminRoute.js";
-import { NEW_MESSAGE, NEW_MESSAGE_ALLERT } from "./constants/events.js";
+import { NEW_MESSAGE, NEW_MESSAGE_ALLERT, START_TYPING, STOP_TYPING } from "./constants/events.js";
 import { getSockets } from "./lib/helper.js";
 import { Message } from "./models/messageModel.js";
 import { socketAuthenticator } from "./middlewares/auth.js";
@@ -50,7 +50,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, { cors: corsOptions });
 
-app.set("io",io);
+app.set("io", io);
 
 //middlewares
 app.use(express.json());
@@ -67,11 +67,11 @@ app.use("/api/v1/chat", chatRoute);
 app.use("/api/v1/admin", adminRoute);
 
 //socket middleware
-io.use((socket, next) => { 
+io.use((socket, next) => {
     cookieParser()(
         socket.request,
         socket.request.res,
-        async (err)=> await socketAuthenticator(err,socket,next)
+        async (err) => await socketAuthenticator(err, socket, next)
     );
 });
 
@@ -121,12 +121,28 @@ io.on("connection", (socket) => {
             console.log(error);
         };
 
-    })
+    });
+
+    socket.on(START_TYPING, ({ members, chatId }) => {
+        console.log("typing", chatId, members);
+
+        const membersSockets = getSockets(members);
+        socket.to(membersSockets).emit(START_TYPING,{chatId});
+    });
+
+
+    socket.on(STOP_TYPING, ({ members, chatId }) => {
+        console.log("stop typing", chatId  );
+
+        const membersSockets = getSockets(members);
+        socket.to(membersSockets).emit(STOP_TYPING,{chatId});
+    });
+
 
     socket.on("disconnect", () => {
         console.log("user disconnected");
         userSocketIDs.delete(user._id.toString());
-    })
+    });
 
 })
 
