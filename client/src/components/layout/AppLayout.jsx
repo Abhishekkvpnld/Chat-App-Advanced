@@ -11,13 +11,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setIsMobile } from '../../../redux/reducers/misc';
 import { useErrors, useSocketEvents } from '../../hooks/hook';
 import { getSocket } from "../../socket"
-import { NEW_MESSAGE_ALLERT, NEW_REQUEST } from '../../constants/events';
+import { NEW_MESSAGE_ALLERT, NEW_REQUEST, REFETCH_CHAT } from '../../constants/events';
 import { incrementNotification, setNewMessagesAlert } from '../../../redux/reducers/chat';
 import { getOrSaveFromStorage } from '../../lib/Features';
+import { useNavigate } from "react-router-dom";
 
 const AppLayout = (WrappedComponent) => {
   return (props) => {
 
+    const navigate = useNavigate()
     const dispatch = useDispatch();
     const params = useParams();
     const chatId = params.chatId;
@@ -30,7 +32,7 @@ const AppLayout = (WrappedComponent) => {
 
     const { user } = useSelector((state) => state.auth);
 
-    const { isLoading, data, isError, error } = useMyChatsQuery("");
+    const { isLoading, data, isError, error, refetch } = useMyChatsQuery("");
 
     useErrors([{ isError, error }]);
 
@@ -57,9 +59,15 @@ const AppLayout = (WrappedComponent) => {
       dispatch(incrementNotification());
     }, [dispatch]);
 
+    const refetchListner = useCallback(() => {
+      refetch();
+      navigate("/");
+    }, [refetch, navigate]);
+
     const eventHandlers = {
       [NEW_MESSAGE_ALLERT]: newMessageAlertHandler,
-      [NEW_REQUEST]: newRequestHandler
+      [NEW_REQUEST]: newRequestHandler,
+      [REFETCH_CHAT]: refetchListner
     };
 
     useSocketEvents(socket, eventHandlers);

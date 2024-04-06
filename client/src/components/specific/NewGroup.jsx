@@ -35,10 +35,8 @@ const NewGroup = () => {
       prev.filter((currentElement) => currentElement !== id)
       :
       [...prev, id]
-    )
-    console.log(selectedMembers);
-
-  }
+    );
+  };
 
 
   const submitHandler = () => {

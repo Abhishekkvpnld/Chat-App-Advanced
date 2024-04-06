@@ -17,11 +17,12 @@ import { setIsFileMenu } from '../../redux/reducers/misc';
 import { removeNewMessageAlert } from '../../redux/reducers/chat';
 import { ALERT, START_TYPING, STOP_TYPING } from '../constants/events';
 import { TypingLoader } from '../components/layout/LayoutLoader';
-
+import { useNavigate } from "react-router-dom";
 
 
 const Chat = ({ chatId, user }) => {
 
+  const navigate = useNavigate()
   const dispatch = useDispatch();
   const containerRef = useRef(null);
   const socket = getSocket();
@@ -106,7 +107,12 @@ const Chat = ({ chatId, user }) => {
       behavior: "smooth"
     });
 
-  }, [messages])
+  }, [messages]);
+
+
+  useEffect(() => {
+    if (!chatDetails.data?.chat) return navigate("/");
+  }, [chatDetails.data]);
 
 
   const newMessageHandler = useCallback((data) => {
@@ -128,20 +134,20 @@ const Chat = ({ chatId, user }) => {
   }, [chatId]);
 
 
-const alertListner = useCallback((content)=>{
-const messageForAlert = {
-  content,
-  sender:{
-    _id:"dsffsffgfgfdgggfg",
-    name:"admin"
-  },
-  chat:chatId,
-  createdAt:new Date().toISOString()
-}
+  const alertListner = useCallback((content) => {
+    const messageForAlert = {
+      content,
+      sender: {
+        _id: "dsffsffgfgfdgggfg",
+        name: "admin"
+      },
+      chat: chatId,
+      createdAt: new Date().toISOString()
+    }
 
-setMessages((prev)=>[...prev,messageForAlert]);
+    setMessages((prev) => [...prev, messageForAlert]);
 
-},[chatId]);
+  }, [chatId]);
 
 
   const eventHandler = {
