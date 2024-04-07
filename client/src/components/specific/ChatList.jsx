@@ -8,13 +8,13 @@ const ChatList = ({ w = "100%",
   onlineUsers = [],
   newMessagesAlert = [{ chatId: '1', count: 0 }],
   handleDeleteChat }) => {
-
   return (
     <Stack width={w} direction={"column"}
       sx={{ overflow: "auto" }}
       height={"100%"}
     >
       {
+        
         chats?.map((chat, index) => {
           const { avatar, name, _id, groupChat, members } = chat;
 

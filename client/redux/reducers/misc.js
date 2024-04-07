@@ -9,7 +9,7 @@ const initialState = {
     isFileMenu: false,
     isDeleteMenu: false,
     isLoadingLoader: false,
-    isSelectedDeleteChat: {
+    selectedDeleteChat: {
         chatId: "",
         groupChat: false
     },
@@ -44,8 +44,8 @@ const miscSlice = createSlice({
         setIsLoadingLoader: (state, action) => {
             state.isLoadingLoader = action.payload;
         },
-        setIsSelectedDeleteChat: (state, action) => {
-            state.isSelectedDeleteChat = action.payload;
+        setSelectedDeleteChat: (state, action) => {
+            state.selectedDeleteChat = action.payload;
         },
     },
 });
@@ -60,6 +60,6 @@ export const {
     setIsNewGroup,
     setIsNotification,
     setIsSearch,
-    setIsSelectedDeleteChat,
+    setSelectedDeleteChat,
 
 } = miscSlice.actions;
