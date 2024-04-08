@@ -5,8 +5,25 @@ import { AdminPanelSettings as AdminPanelSettingsIcon, Group as GroupIcon, Notif
 import moment from 'moment';
 import { CurveButton, SearchField } from '../../components/styles/StyledComponents';
 import { DoughnutChart, LineChart } from '../../components/specific/Chart';
+import { useFetchData } from "6pp";
+import { server } from '../../constants/config';
+import { useErrors } from "../../hooks/hook";
+import { LayoutLoader } from "../../components/layout/LayoutLoader";
 
 const DashBoard = () => {
+
+  const { loading, data, error } = useFetchData(`${server}/api/v1/admin/stats`, "dashboard-stats");
+
+  const { stats } = data || {};
+
+  console.log(stats);
+
+  useErrors([
+    {
+      isError: error,
+      error: error
+    }
+  ]);
 
   const Appbar = (
     <Paper
@@ -42,15 +59,14 @@ const DashBoard = () => {
       alignItems={"center"}
       margin={"2rem 0"}
     >
-      <Widget title={"Users"} value={34} icon={<PersonIcon />} />
-      <Widget title={"Chats"} value={3} icon={<GroupIcon />} />
-      <Widget title={"Messages"} value={453} icon={<MessageIcon />} />
-    </Stack>  
+      <Widget title={"Users"} value={stats?.usersCount} icon={<PersonIcon />} />
+      <Widget title={"Chats"} value={stats?.totalChatsCount} icon={<GroupIcon />} />
+      <Widget title={"Messages"} value={stats?.messagesCount} icon={<MessageIcon />} />
+    </Stack>
   )
 
 
-  return (
-
+  return loading ? <LayoutLoader /> : (
     <AdminLayout>
       <Container component={"main"}>
         {Appbar}
@@ -64,7 +80,7 @@ const DashBoard = () => {
             xs: "center",
             lg: "stretch"
           }}
-          sx={{gap:"2rem"}}
+          sx={{ gap: "2rem" }}
         >
           <Paper
             elevation={3}
@@ -78,7 +94,7 @@ const DashBoard = () => {
             <Typography variant='h4' margin={"2rem 0"}>Last Messages</Typography>
 
             {/* line chart */}
-            <LineChart value={[10, 33, 65, 23, 89, 11, 55]} />
+            <LineChart value={stats?.messagesChart || []} />
 
           </Paper>
 
@@ -100,7 +116,7 @@ const DashBoard = () => {
             {/* Doughnut Chart */}
             <DoughnutChart
               labels={["Single Chats", "Group Chats"]}
-              value={[25, 75]}
+              value={[(stats?.totalChatsCount - stats?.groupsCount) || 0, stats?.groupsCount || 0]}
             />
 
             <Stack

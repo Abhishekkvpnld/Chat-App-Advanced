@@ -15,6 +15,7 @@ export const sendToken = (res, user, code, message) => {
         .cookie("chat-token", token, cookieOptions)
         .json({
             success: true,
+            user,
             message,
         });
 

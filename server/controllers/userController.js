@@ -137,7 +137,6 @@ export const sendFriendRequest = tryCatch(async (req, res, next) => {
 export const acceptFriendRequest = tryCatch(async (req, res, next) => {
 
     const { requestId, accept } = req.body;
-    console.log("req:" ,req.body);
 
     const request = await Request.findById(requestId).populate("sender", "name").populate("receiver", "name");
     if (!request)
@@ -148,6 +147,7 @@ export const acceptFriendRequest = tryCatch(async (req, res, next) => {
 
     if (!accept) {
         await request.deleteOne();
+
         res.status(200).json({
             success: true,
             message: "Friend Request Rejected"
@@ -161,8 +161,8 @@ export const acceptFriendRequest = tryCatch(async (req, res, next) => {
             members,
             name: `${request.sender.name}-${request.receiver.name}`
         }),
-        request.deleteOne()
-    ])
+        request.deleteOne(),
+    ]);
 
     emitEvent(req, REFETCH_CHAT, members);
 
@@ -171,7 +171,7 @@ export const acceptFriendRequest = tryCatch(async (req, res, next) => {
         message: "Friend Request Accepted...",
         senderId: req.sender._id
     });
-});
+});//****************************************************************************************** */
 
 
 export const getMyNotifications = tryCatch(async (req, res, next) => {

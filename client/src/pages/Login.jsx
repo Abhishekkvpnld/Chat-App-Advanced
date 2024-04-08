@@ -12,7 +12,8 @@ import toast from 'react-hot-toast';
 
 const Login = () => {
 
-    const [isLogin, setIsLogin] = useState(true)
+    const [isLogin, setIsLogin] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
 
     const toggleLogin = () => setIsLogin((prev) => !prev);
 
@@ -26,8 +27,12 @@ const Login = () => {
     const avatar = useFileHandler("single");
 
     const handleSignup = async (e) => {
+
+        const toastId = toast.loading("Signing Up...");
+
         e.preventDefault();
 
+        setIsLoading(true)
         const formData = new FormData();
         formData.append("avatar", avatar.file);
         formData.append("name", name.value);
@@ -35,7 +40,7 @@ const Login = () => {
         formData.append("username", username.value);
         formData.append("password", password.value);
 
-       let config = {
+        let config = {
             withCredentials: true,
             headers: {
                 "Content-Type": "multipart/form-data",
@@ -48,17 +53,23 @@ const Login = () => {
                 formData,
                 config
             );
-            dispatch(userExists(true));
-            toast.success(data.message)
+            dispatch(userExists(data.user));
+            toast.success(data.message,{id:toastId})
         } catch (error) {
-            toast.error(error?.response?.data?.message || "Something Went Wrong...");
+            toast.error(error?.response?.data?.message || "Something Went Wrong...",{id:toastId});
+        } finally {
+            setIsLoading(false);
         };
 
     };
-    
+
 
     const handleLogin = async (e) => {
         e.preventDefault();
+
+        const toastId = toast.loading("Logging In...")
+
+        setIsLoading(true);
 
         let config = {
             withCredentials: true,
@@ -77,15 +88,14 @@ const Login = () => {
                 config
             );
 
-            dispatch(userExists(true));
-            toast.success(data.message)
+            dispatch(userExists(data.user));
+            toast.success(data.message,{id:toastId});
 
         } catch (error) {
-            toast.error(error?.response?.data?.message || "Something Went Wrong...");
-        }
-
-
-
+            toast.error(error?.response?.data?.message || "Something Went Wrong...",{id:toastId});
+        } finally {
+            setIsLoading(false);
+        };
 
     };
 
@@ -113,13 +123,13 @@ const Login = () => {
                                 <TextField required fullWidth label="Username" margin='normal' variant='outlined' value={username.value} onChange={username.changeHandler} />
                                 <TextField required fullWidth label="Password" type='password' margin='normal' variant='outlined' value={password.value} onChange={password.changeHandler} />
 
-                                <Button variant='contained' color='primary' type='submit' fullWidth sx={{ marginTop: "1rem" }}>Login</Button>
+                                <Button variant='contained' color='primary' type='submit' fullWidth sx={{ marginTop: "1rem" }} disabled={isLoading}>Login</Button>
 
                                 <Typography textAlign={"center"} m={"1rem"} >
                                     OR
                                 </Typography>
 
-                                <Button variant='text' onClick={toggleLogin} fullWidth >Signup</Button>
+                                <Button variant='text' onClick={toggleLogin} fullWidth disabled={isLoading}>Signup</Button>
 
                             </form>
                         </>
@@ -185,13 +195,13 @@ const Login = () => {
                                     )
                                 }
 
-                                <Button variant='contained' color='primary' type='submit' fullWidth sx={{ marginTop: "1rem" }}>Sign Up </Button>
+                                <Button variant='contained' color='primary' type='submit' fullWidth sx={{ marginTop: "1rem" }} disabled={isLoading}>Sign Up </Button>
 
                                 <Typography textAlign={"center"} m={"1rem"} >
                                     OR
                                 </Typography>
 
-                                <Button variant='text' onClick={toggleLogin} fullWidth >Login</Button>
+                                <Button variant='text' onClick={toggleLogin} fullWidth disabled={isLoading}>Login</Button>
 
                             </form>
                         </>

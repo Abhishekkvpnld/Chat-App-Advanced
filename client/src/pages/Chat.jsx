@@ -134,9 +134,12 @@ const Chat = ({ chatId, user }) => {
   }, [chatId]);
 
 
-  const alertListner = useCallback((content) => {
+  const alertListner = useCallback((data) => {
+
+    if(data.chatId !== chatId) return;
+
     const messageForAlert = {
-      content,
+      content: data.message,
       sender: {
         _id: "dsffsffgfgfdgggfg",
         name: "admin"
