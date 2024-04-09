@@ -17,7 +17,7 @@ import { corsOptions } from "./constants/config.js";
 import chatRoute from "./routes/chatRoute.js";
 import userRoute from "./routes/userRoute.js";
 import adminRoute from "./routes/adminRoute.js";
-import { NEW_MESSAGE, NEW_MESSAGE_ALLERT, START_TYPING, STOP_TYPING } from "./constants/events.js";
+import { CHAT_JOINED, CHAT_LEFT, NEW_MESSAGE, NEW_MESSAGE_ALLERT, ONLINE_USERS, START_TYPING, STOP_TYPING } from "./constants/events.js";
 import { getSockets } from "./lib/helper.js";
 import { Message } from "./models/messageModel.js";
 import { socketAuthenticator } from "./middlewares/auth.js";
@@ -40,6 +40,7 @@ cloudinary.config({
 
 export const adminSecretKey = process.env.ADMIN_SECRET_KEY || "adminauthentication";
 export const userSocketIDs = new Map();
+export const onlineUsers = new Set();
 
 // createSingleChats(10);
 // createGroupChat(10);
@@ -77,11 +78,10 @@ io.use((socket, next) => {
 
 //socket.io connection
 io.on("connection", (socket) => {
+
     const user = socket.user;
 
     userSocketIDs.set(user._id.toString(), socket.id);
-
-    console.log("a user connected", userSocketIDs);
 
     socket.on(NEW_MESSAGE, async ({ chatId, members, message }) => {
         const messageForRealTime = {
@@ -114,37 +114,46 @@ io.on("connection", (socket) => {
         });
 
         try {
-
             await Message.create(messageForDB);
 
         } catch (error) {
-            console.log(error);
+            throw new Error(error);
         };
 
     });
 
     socket.on(START_TYPING, ({ members, chatId }) => {
-        console.log("typing", chatId, members);
-
         const membersSockets = getSockets(members);
-        socket.to(membersSockets).emit(START_TYPING,{chatId});
+        socket.to(membersSockets).emit(START_TYPING, { chatId });
     });
 
-
     socket.on(STOP_TYPING, ({ members, chatId }) => {
-        console.log("stop typing", chatId  );
-
         const membersSockets = getSockets(members);
-        socket.to(membersSockets).emit(STOP_TYPING,{chatId});
+        socket.to(membersSockets).emit(STOP_TYPING, { chatId });
+    });
+
+    socket.on(CHAT_JOINED, ({ userId, members }) => {
+        onlineUsers.add(userId.toString());
+
+        const membersSocket = getSockets(members);
+        io.to(membersSocket).emit(ONLINE_USERS, Array.from(onlineUsers));
+    });
+
+    socket.on(CHAT_LEFT, ({ userId, members }) => {
+        onlineUsers.delete(userId.toString());
+
+        const membersSocket = getSockets(members);
+        io.to(membersSocket).emit(ONLINE_USERS, Array.from(onlineUsers));
     });
 
 
     socket.on("disconnect", () => {
-        console.log("user disconnected");
         userSocketIDs.delete(user._id.toString());
+        onlineUsers.delete(user._id.toString());
+        socket.broadcast.emit(ONLINE_USERS, Array.from(onlineUsers));
     });
 
-})
+});
 
 app.use(errorMiddleware);
 

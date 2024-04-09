@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import AdminLayout from '../../components/layout/AdminLayout';
 import Table from '../../components/shared/Table';
 import { Avatar, Stack } from '@mui/material';
-import { dashboardData } from "../../constants/SampleChat";
 import { transformImage } from "../../lib/Features";
 import AvatarCard from "../../components/shared/AvatarCard";
 import { useFetchData } from "6pp";
@@ -77,7 +76,7 @@ const column = [
 const ChatManagement = () => {
 
   const { loading, data, error } = useFetchData(`${server}/api/v1/admin/chats`, "dashboard-chats");
-console.log(data);
+
   useErrors([
     {
       isError: error,
@@ -106,7 +105,7 @@ console.log(data);
   return (
     <AdminLayout>
       {
-        loading ? <Skeleton /> :
+        loading ? <Skeleton height={"100vh"} /> :
           <Table heading={"All Chats"} rows={rows} column={column} />
       }
     </AdminLayout>

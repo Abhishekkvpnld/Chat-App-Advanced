@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Header from './Header';
 import Footer from './Footer';
 import Title from '../shared/Title';
@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setIsDeleteMenu, setIsMobile, setSelectedDeleteChat } from '../../../redux/reducers/misc';
 import { useErrors, useSocketEvents } from '../../hooks/hook';
 import { getSocket } from "../../socket"
-import { NEW_MESSAGE_ALLERT, NEW_REQUEST, REFETCH_CHAT } from '../../constants/events';
+import { NEW_MESSAGE_ALLERT, NEW_REQUEST, ONLINE_USERS, REFETCH_CHAT } from '../../constants/events';
 import { incrementNotification, setNewMessagesAlert } from '../../../redux/reducers/chat';
 import { getOrSaveFromStorage } from '../../lib/Features';
 import { useNavigate } from "react-router-dom";
@@ -30,6 +30,7 @@ const AppLayout = (WrappedComponent) => {
 
     const socket = getSocket();
 
+    const [onlineUsers, setOnlineUsers] = useState([]);
 
     const { isMobile } = useSelector((state) => state.misc);
     const { newMessagesAlert } = useSelector((state) => state.chat);
@@ -50,7 +51,7 @@ const AppLayout = (WrappedComponent) => {
 
     const handleDeleteChat = (e, _id, groupChat) => {
       dispatch(setIsDeleteMenu(true));
-      dispatch(setSelectedDeleteChat({chatId,groupChat}));
+      dispatch(setSelectedDeleteChat({ chatId, groupChat }));
       deleteMenuAnchor.current = e.currentTarget;
     };
 
@@ -74,15 +75,21 @@ const AppLayout = (WrappedComponent) => {
       refetch();
       navigate("/");
     }, [refetch, navigate]);
+    
+
+    const onlineUsersListner = useCallback((data) => {
+      setOnlineUsers(data)
+    }, []);
 
 
     const eventHandlers = {
       [NEW_MESSAGE_ALLERT]: newMessageAlertHandler,
       [NEW_REQUEST]: newRequestHandler,
-      [REFETCH_CHAT]: refetchListner
+      [REFETCH_CHAT]: refetchListner,
+      [ONLINE_USERS]: onlineUsersListner
     };
 
-    
+
     useSocketEvents(socket, eventHandlers);
 
 
@@ -101,7 +108,7 @@ const AppLayout = (WrappedComponent) => {
                 chats={data?.chats}
                 chatId={chatId}
                 handleDeleteChat={handleDeleteChat}
-
+                onlineUsers={onlineUsers}
               />
             </Drawer>
           )
@@ -120,6 +127,7 @@ const AppLayout = (WrappedComponent) => {
                   chatId={chatId}
                   handleDeleteChat={handleDeleteChat}
                   newMessagesAlert={newMessagesAlert}
+                  onlineUsers={onlineUsers}
                 />
               )
             }

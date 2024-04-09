@@ -14,7 +14,6 @@ const Notification = () => {
   const dispatch = useDispatch();
 
   const { isLoading, data, error, isError } = useGetNotificationsQuery();
-  // console.log("data", data, "error", error, "isError", isError); 
 
   const [acceptRequest] = useAsyncMutation(useAcceptFriendRequestMutation);
 

@@ -15,7 +15,7 @@ import { useInfiniteScrollTop } from "6pp";
 import { useDispatch } from 'react-redux';
 import { setIsFileMenu } from '../../redux/reducers/misc';
 import { removeNewMessageAlert } from '../../redux/reducers/chat';
-import { ALERT, START_TYPING, STOP_TYPING } from '../constants/events';
+import { ALERT, CHAT_JOINED, CHAT_LEFT, START_TYPING, STOP_TYPING } from '../constants/events';
 import { TypingLoader } from '../components/layout/LayoutLoader';
 import { useNavigate } from "react-router-dom";
 
@@ -90,6 +90,7 @@ const Chat = ({ chatId, user }) => {
 
   useEffect(() => {
 
+    socket.emit(CHAT_JOINED,{userId:user._id,members});
     dispatch(removeNewMessageAlert(chatId));
 
     return () => {
@@ -97,6 +98,7 @@ const Chat = ({ chatId, user }) => {
       setMessage("");
       setAllOldMessages([]);
       setPage(1);
+      socket.emit(CHAT_LEFT,{userId:user._id,members});
     }
 
   }, [chatId]);

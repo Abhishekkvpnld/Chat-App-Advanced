@@ -1,6 +1,6 @@
 import React from 'react';
 import AdminLayout from '../../components/layout/AdminLayout';
-import { Box, Container, Paper, Stack, Typography } from '@mui/material';
+import { Box, Container, Paper, Stack, Typography,Skeleton } from '@mui/material';
 import { AdminPanelSettings as AdminPanelSettingsIcon, Group as GroupIcon, Notifications as NotificationsIcon, Person as PersonIcon, Message as MessageIcon } from '@mui/icons-material';
 import moment from 'moment';
 import { CurveButton, SearchField } from '../../components/styles/StyledComponents';
@@ -8,15 +8,13 @@ import { DoughnutChart, LineChart } from '../../components/specific/Chart';
 import { useFetchData } from "6pp";
 import { server } from '../../constants/config';
 import { useErrors } from "../../hooks/hook";
-import { LayoutLoader } from "../../components/layout/LayoutLoader";
+
 
 const DashBoard = () => {
 
   const { loading, data, error } = useFetchData(`${server}/api/v1/admin/stats`, "dashboard-stats");
 
   const { stats } = data || {};
-
-  console.log(stats);
 
   useErrors([
     {
@@ -66,9 +64,10 @@ const DashBoard = () => {
   )
 
 
-  return loading ? <LayoutLoader /> : (
+  return  (
     <AdminLayout>
-      <Container component={"main"}>
+    { loading ? <Skeleton height={"100vh"}/> :
+        <Container component={"main"}>
         {Appbar}
 
 
@@ -141,6 +140,7 @@ const DashBoard = () => {
         {Widgets}
 
       </Container>
+    }
     </AdminLayout>
   )
 }
