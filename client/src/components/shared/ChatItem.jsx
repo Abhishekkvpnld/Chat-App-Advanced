@@ -37,6 +37,11 @@ const ChatItem = (
                     color: sameSender ? 'white' : "unset",
                     position: "relative",
                     boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
+                    transition: "background-color 0.3s, color 0.3s",
+                    "&:hover": {
+                        backgroundColor: sameSender ? '#6ca66c' : "unset",
+                        color: sameSender ? 'white' : "unset", 
+                    }
                 }}>
 
 
