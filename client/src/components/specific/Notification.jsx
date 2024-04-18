@@ -9,9 +9,8 @@ import { setIsNotification } from '../../../redux/reducers/misc';
 
 const Notification = () => {
 
-  const { isNotification } = useSelector((state) => state.misc)
-
   const dispatch = useDispatch();
+  const { isNotification } = useSelector((state) => state.misc);
 
   const { isLoading, data, error, isError } = useGetNotificationsQuery();
 

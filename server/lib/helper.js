@@ -1,15 +1,9 @@
 import { userSocketIDs } from "../app.js";
 
 
-export const getOtherMember = (members, userId) => {
 
-    if (!Array.isArray(members)) {
-        console.error("Error: members is not an array");
-    }
-
-    const otherMember = members.find((member) => member._id.toString() !== userId.toString());
-    return otherMember;
-};
+export const getOtherMember = (members, userId) =>
+  members.find((member) => member._id.toString() !== userId.toString());
 
 
 export const getSockets = (users = []) => {

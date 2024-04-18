@@ -5,12 +5,14 @@ import toast from "react-hot-toast";
 
 export const useErrors = (errors = []) => {
     useEffect(() => {
-        errors.forEach(({ isError, error, fallback }) => {
-            if (isError) {
-                if (fallback) fallback();
-                else toast.error(error?.data?.message || "Something went wrong...")
-            };
-        });
+        errors.forEach(
+            ({ isError, error, fallback }) => {
+                if (isError) {
+                    if (fallback) fallback();
+                    else toast.error(error?.data?.message || "Something went wrong...")
+                };
+            }
+        );
     }, [errors]);
 
 };
@@ -18,6 +20,7 @@ export const useErrors = (errors = []) => {
 
 
 export const useAsyncMutation = (mutationHook) => {
+    
 
     const [isLoading, setIsLoading] = useState(false);
     const [data, setData] = useState(null);
@@ -51,14 +54,14 @@ export const useAsyncMutation = (mutationHook) => {
 
 export const useSocketEvents = (socket, handler) => {
     useEffect(() => {
-        Object.entries(handler).forEach(([event,handler]) => {
-            socket.on(event,handler);
+        Object.entries(handler).forEach(([event, handler]) => {
+            socket.on(event, handler);
         });
 
         return () => {
-            Object.entries(handler).forEach(([event,handler]) => {
-                socket.off(event,handler);
+            Object.entries(handler).forEach(([event, handler]) => {
+                socket.off(event, handler);
             });
         };
-    }, [socket,handler]);
+    }, [socket, handler]);
 };

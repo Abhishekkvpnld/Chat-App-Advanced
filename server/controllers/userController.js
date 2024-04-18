@@ -96,7 +96,7 @@ export const searchUser = tryCatch(async (req, res) => {
         _id,
         name,
         avatar: avatar.url
-    }))
+    }));
 
 
 
@@ -143,7 +143,7 @@ export const acceptFriendRequest = tryCatch(async (req, res, next) => {
         return next(new ErrorHandler("Request Not Found", 404));
 
     if (request.receiver._id.toString() !== req.user.toString())
-        return next(ErrorHandler("You are not authorized to accept this request", 401));
+        return next(new ErrorHandler("You are not authorized to accept this request", 401));
 
     if (!accept) {
         await request.deleteOne();
@@ -169,9 +169,9 @@ export const acceptFriendRequest = tryCatch(async (req, res, next) => {
     return res.status(200).json({
         success: true,
         message: "Friend Request Accepted...",
-        senderId: req.sender._id
+        senderId: request.sender._id
     });
-});//****************************************************************************************** */
+});
 
 
 export const getMyNotifications = tryCatch(async (req, res, next) => {
@@ -209,8 +209,9 @@ export const getMyFriends = tryCatch(async (req, res, next) => {
             _id: otherUser._id,
             name: otherUser.name,
             avatar: otherUser.avatar.url
-        }
-    })
+        };
+    });
+
 
     if (chatId) {
 
@@ -223,7 +224,7 @@ export const getMyFriends = tryCatch(async (req, res, next) => {
         return res.status(200).json({
             success: true,
             friends: availableFriends
-        })
+        });
 
     } else {
 

@@ -4,7 +4,7 @@ import { IconButton, Skeleton, Stack } from '@mui/material';
 import { greyColor } from '../constants/color';
 import { AttachFile as FileIcon, Send as SendIcon } from "@mui/icons-material";
 import { InputBox } from '../components/styles/StyledComponents';
-import { orange } from '../constants/color';
+// import { orange } from '../constants/color';
 import FileMenu from '../components/dialogs/FileMenu';
 import MessageComponent from '../components/shared/MessageComponent';
 import { getSocket } from '../socket';
@@ -18,6 +18,7 @@ import { removeNewMessageAlert } from '../../redux/reducers/chat';
 import { ALERT, CHAT_JOINED, CHAT_LEFT, START_TYPING, STOP_TYPING } from '../constants/events';
 import { TypingLoader } from '../components/layout/LayoutLoader';
 import { useNavigate } from "react-router-dom";
+import Wallpaper from "../pages/Wallpaper.jpeg";
 
 
 const Chat = ({ chatId, user }) => {
@@ -90,7 +91,7 @@ const Chat = ({ chatId, user }) => {
 
   useEffect(() => {
 
-    socket.emit(CHAT_JOINED,{userId:user._id,members});
+    socket.emit(CHAT_JOINED, { userId: user._id, members });
     dispatch(removeNewMessageAlert(chatId));
 
     return () => {
@@ -98,7 +99,7 @@ const Chat = ({ chatId, user }) => {
       setMessage("");
       setAllOldMessages([]);
       setPage(1);
-      socket.emit(CHAT_LEFT,{userId:user._id,members});
+      socket.emit(CHAT_LEFT, { userId: user._id, members });
     }
 
   }, [chatId]);
@@ -138,7 +139,7 @@ const Chat = ({ chatId, user }) => {
 
   const alertListner = useCallback((data) => {
 
-    if(data.chatId !== chatId) return;
+    if (data.chatId !== chatId) return;
 
     const messageForAlert = {
       content: data.message,
@@ -154,7 +155,7 @@ const Chat = ({ chatId, user }) => {
 
   }, [chatId]);
 
-
+  //Event Handler
   const eventHandler = {
     [ALERT]: alertListner,
     [NEW_MESSAGE]: newMessageHandler,
@@ -181,6 +182,7 @@ const Chat = ({ chatId, user }) => {
         sx={{
           overflowX: "hidden",
           overflowY: "auto",
+          backgroundImage:`url(${Wallpaper})`
         }}
       >
 
@@ -201,14 +203,14 @@ const Chat = ({ chatId, user }) => {
         <Stack
           direction={"row"}
           height={"100%"}
-          padding={"0.5rem"}
+          padding={"0.2rem"}
           alignItems={"center"}
           position={"relative"}
         >
 
           <IconButton sx={{
             position: "absolute",
-            left: "1.5rem",
+            left: "0.5rem",
             rotate: "30deg"
           }}
             onClick={handleFileOpen}
@@ -216,18 +218,20 @@ const Chat = ({ chatId, user }) => {
             <FileIcon />
           </IconButton>
 
-          <InputBox placeholder='Type Message Here...' value={message} onChange={messageOnChange} />
+          <InputBox placeholder='Type Message Here...' value={message} onChange={messageOnChange} style={{backgroundColor:'#F0F8FF'}}/>
 
           <IconButton type='submit' sx={{
             rotate: "-30deg",
-            bgcolor: orange,
+            bgcolor: "green",
             color: "white",
             marginLeft: "1rem",
-            padding: "0.5rem",
-            "$:hover": {
-              bgcolor: "green"
+            padding: "0.6rem",
+            "&:hover": {
+              bgcolor: "#00cc00",
+              color: "black"
             }
           }}>
+
             <SendIcon />
           </IconButton>
 

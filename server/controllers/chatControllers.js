@@ -33,27 +33,33 @@ export const newGroupChat = tryCatch(async (req, res, next) => {
     });
 });
 
+    
 export const getMyChats = tryCatch(async (req, res, next) => {
 
     const chats = await Chat.find({ members: req.user }).populate("members", "name avatar");
 
-    const transformChat = chats.map(({ _id, name, members, groupChat }) => {
+    const transformChat = chats.map(
+        ({ _id, name, members, groupChat }) => {
 
         const otherMember = getOtherMember(members, req.user);
-
+        
         return {
             _id,
             groupChat,
-            avatar: groupChat
+
+            avatar: groupChat === "true"
                 ? members.slice(0, 3).map(({ avatar }) => avatar.url)
                 : [otherMember.avatar.url],
-            name: groupChat ? name : otherMember.name,
+
+            name: groupChat === "true" ? name : otherMember.name,
+
             members: members.reduce((prev, curr) => {
                 if (curr._id.toString() !== req.user.toString()) {
                     prev.push(curr._id);
                 }
                 return prev;
             }, []),
+
         };
     });
 

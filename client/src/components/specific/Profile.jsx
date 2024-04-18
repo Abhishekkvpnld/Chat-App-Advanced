@@ -10,7 +10,7 @@ import { transformImage } from '../../lib/Features';
 
 const Profile = ({ user }) => {
     return (
-        <Stack spacing={"2rem"} direction={"column"} alignItems={"center"} >
+        <Stack spacing={"2rem"} direction={"column"} alignItems={"center"} width={"100%"} >
             <Avatar
                 src={transformImage(user?.avatar?.url)}
                 sx={{
@@ -18,13 +18,13 @@ const Profile = ({ user }) => {
                     height: 200,
                     objectFit: "contain",
                     marginBottom: "1rem",
-                    border: "5px solid white"
+                    border: "3px solid white"
                 }}
             />
             <ProfiileCard heading={"Bio"} text={user?.bio} />
-            <ProfiileCard heading={"Username"} text={user?.username} Icon={<UsernameIcon />} />
-            <ProfiileCard heading={"Name"} text={user?.name} Icon={<FaceIcon />} />
-            <ProfiileCard heading={"Joined"} text={moment(user?.createdAt).fromNow()} Icon={<CalendarIcon />} />
+            <ProfiileCard heading={"Username"} text={user?.username} Icon={<UsernameIcon style={{color:"black"}}/>} />
+            <ProfiileCard heading={"Name"} text={user?.name} Icon={<FaceIcon style={{color:"green"}}/>} />
+            <ProfiileCard heading={"Joined"} text={moment(user?.createdAt).fromNow()} Icon={<CalendarIcon style={{color:"red"}}/>} />
         </Stack>
     )
 }

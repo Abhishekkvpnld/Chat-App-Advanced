@@ -1,6 +1,6 @@
 import { AppBar, Backdrop, Badge, Box, IconButton, Toolbar, Tooltip, Typography } from '@mui/material';
 import { orange } from "../../constants/color";
-import React, { Suspense, lazy, useState } from 'react';
+import React, { Suspense, lazy} from 'react';
 import { Menu as MenuIcon, Search as SearchIcon, Add as AddIcon, Group as GroupIcon, Logout as LogoutIcon, Notifications as NotificationIcon } from "@mui/icons-material";
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
@@ -14,6 +14,8 @@ import { resetNotificationCount } from '../../../redux/reducers/chat';
 const Search = lazy(() => import('../specific/Search'));
 const Notification = lazy(() => import('../specific/Notification'));
 const NewGroup = lazy(() => import('../specific/NewGroup'));
+
+
 
 const Header = () => {
 
@@ -78,11 +80,11 @@ const Header = () => {
 
                         <Box>
 
-                            <BtnIcon title={"Search"} onClick={openSearch} icon={<SearchIcon />} />
-                            <BtnIcon title={"New Group"} onClick={openNewGroup} icon={<AddIcon />} />
-                            <BtnIcon title={"Manage Group"} onClick={navigateToGroup} icon={<GroupIcon />} />
-                            <BtnIcon title={"Notifications"} onClick={openNotification} icon={<NotificationIcon />} value={notificationCount}/>
-                            <BtnIcon title={"Logout"} onClick={logoutHandler} icon={<LogoutIcon />} />
+                            <BtnIcon title={"Search"} onClick={openSearch} icon={<SearchIcon sx={{"&:hover":{transform: "scale(1.2)"}}} />} />
+                            <BtnIcon title={"New Group"} onClick={openNewGroup} icon={<AddIcon sx={{"&:hover":{transform: "scale(1.2)"}}}/>} />
+                            <BtnIcon title={"Manage Group"} onClick={navigateToGroup} icon={<GroupIcon  sx={{"&:hover":{transform: "scale(1.2)"}}} />} />
+                            <BtnIcon title={"Notifications"} onClick={openNotification} icon={<NotificationIcon  sx={{"&:hover":{transform: "scale(1.2)"}}} />} value={notificationCount}/>
+                            <BtnIcon title={"Logout"} onClick={logoutHandler} icon={<LogoutIcon  sx={{"&:hover":{transform: "scale(1.2)"}}} />} />
 
                         </Box>
 

@@ -16,6 +16,9 @@ import { incrementNotification, setNewMessagesAlert } from '../../../redux/reduc
 import { getOrSaveFromStorage } from '../../lib/Features';
 import { useNavigate } from "react-router-dom";
 import DeleteChatMenu from '../dialogs/DeleteChatMenu';
+import profileImg from "../../pages/whatsapp-background-wallpaper-s06.jpg";
+
+
 
 const AppLayout = (WrappedComponent) => {
   return (props) => {
@@ -38,13 +41,13 @@ const AppLayout = (WrappedComponent) => {
     const { user } = useSelector((state) => state.auth);
 
     const { isLoading, data, isError, error, refetch } = useMyChatsQuery("");
-
+    console.log("chats", data);
 
     useErrors([{ isError, error }]);
 
 
     useEffect(() => {
-      getOrSaveFromStorage({ key: NEW_MESSAGE_ALLERT, value: newMessagesAlert });
+      getOrSaveFromStorage({ key: NEW_MESSAGE_ALLERT, value: newMessagesAlert }); 
     }, [newMessagesAlert]);
 
 
@@ -75,7 +78,7 @@ const AppLayout = (WrappedComponent) => {
       refetch();
       navigate("/");
     }, [refetch, navigate]);
-    
+
 
     const onlineUsersListner = useCallback((data) => {
       setOnlineUsers(data)
@@ -103,6 +106,7 @@ const AppLayout = (WrappedComponent) => {
         {
           isLoading ? (<Skeleton />) : (
             <Drawer open={isMobile} onClose={handleMobileClose}>
+
               <ChatList
                 w='70vw'
                 chats={data?.chats}
@@ -110,11 +114,13 @@ const AppLayout = (WrappedComponent) => {
                 handleDeleteChat={handleDeleteChat}
                 onlineUsers={onlineUsers}
               />
+
             </Drawer>
           )
         }
 
         <Grid container height={"calc(100vh - 4rem)"}>
+
 
           <Grid item sm={4} md={3}
             sx={{ display: { xs: "none", sm: "block" } }}
@@ -133,6 +139,7 @@ const AppLayout = (WrappedComponent) => {
             }
           </Grid>
 
+
           <Grid
             height={'100%'}
             item
@@ -141,21 +148,24 @@ const AppLayout = (WrappedComponent) => {
             <WrappedComponent {...props} chatId={chatId} user={user} />
           </Grid >
 
+
           <Grid item
             md={4} lg={3}
             height={"100%"}
             sx={{
               display: { xs: "none", md: "block" },
-              padding: "2rem", bgcolor: "rgba(0,0,0,0.85)"
+              padding: "2rem", bgcolor: "#2F4F4F",
+              backgroundImage: `url(${profileImg})`
             }}
           >
             <Profile user={user} />
           </Grid>
 
+
         </Grid>
 
 
-        <Footer />
+        {/* <Footer /> */}
       </div>
     );
   };

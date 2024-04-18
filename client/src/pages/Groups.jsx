@@ -11,6 +11,7 @@ import { useAsyncMutation, useErrors } from "../hooks/hook";
 import { LayoutLoader } from "../components/layout/LayoutLoader";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsAddMember } from '../../redux/reducers/misc';
+import Header from '../components/layout/Header';
 
 const ConfirmDeleteDialog = lazy(() => import("../components/dialogs/ConfirmDeleteDialog"));
 const AddMemberDialog = lazy(() => import("../components/dialogs/AddMemberDialog"));
@@ -122,7 +123,7 @@ const Groups = () => {
     removeMember("Removing Member...", { chatId, userId })
   };
 
-  
+
   // useEffect(() => {
   //   const groupData = groupDetails.data
   //   if (chatId) {
@@ -235,20 +236,20 @@ const Groups = () => {
 
 
   return myGroups?.isLoading ? <LayoutLoader /> : (
+    
     <Grid container height={"100vh"}>
+
       <Grid
         item
         sx={{
-          display: {
-            xs: 'none',
-            sm: "block"
-          }
-        }}
+          display: {xs: 'none', sm: "block"}}}
         sm={4}
-        bgcolor={"bisque"}
+        bgcolor={"#48D1CC"}
       >
+        <Typography textAlign={"center"} padding={"1rem"}>Groups</Typography>
         <GroupList myGroups={myGroups?.data?.groups} chatId={chatId} />
       </Grid>
+
 
       <Grid item xs={12} sm={8}
         sx={{
@@ -283,7 +284,6 @@ const Groups = () => {
               md: "1rem 4rem"
             }}
             spacing={"0.1rem"}
-            // bgcolor={"lightgreen"}
             height={"50vh"}
             overflow={"auto"}
           >
@@ -305,7 +305,8 @@ const Groups = () => {
 
           {ButtonGroup}
 
-        </>}
+        </>
+        }
 
       </Grid>
 
@@ -350,11 +351,13 @@ const GroupList = ({ w = "100%", myGroups = [], chatId }) => {
       {
         myGroups.length > 0 ? (
           myGroups.map((group) =>
-           <GroupListItem group={group} chatId={chatId} key={group._id} />)
+            <GroupListItem group={group} chatId={chatId} key={group._id} />)
         ) : (
-          <Typography padding={"1rem"} textAlign={"center"} color={"blue"}>
-            No groups
-          </Typography>
+          <div>
+            <Typography paddingTop={"70%"} textAlign={"center"} color={"black"} fontSize={"25px"}>
+              No Groups
+            </Typography>
+          </div>
         )
       }
     </Stack>
