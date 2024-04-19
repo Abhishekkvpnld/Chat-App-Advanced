@@ -9,7 +9,7 @@ import { Message } from "../models/messageModel.js";
 import { deleteFileFromCloudinary, uploadFilesToCloudinary } from "../utils/cloudinary.js";
 
 
-
+ 
 export const newGroupChat = tryCatch(async (req, res, next) => {
     const { name, members } = req.body;
 
@@ -32,7 +32,7 @@ export const newGroupChat = tryCatch(async (req, res, next) => {
         message: "Group Created..."
     });
 });
-
+ 
     
 export const getMyChats = tryCatch(async (req, res, next) => {
 
@@ -47,11 +47,11 @@ export const getMyChats = tryCatch(async (req, res, next) => {
             _id,
             groupChat,
 
-            avatar: groupChat === "true"
+            avatar: groupChat
                 ? members.slice(0, 3).map(({ avatar }) => avatar.url)
                 : [otherMember.avatar.url],
 
-            name: groupChat === "true" ? name : otherMember.name,
+            name: groupChat ? name : otherMember.name,
 
             members: members.reduce((prev, curr) => {
                 if (curr._id.toString() !== req.user.toString()) {

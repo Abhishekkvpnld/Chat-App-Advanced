@@ -7,7 +7,7 @@ const schema = new Schema({
         required: true
     },
     groupChat: {
-        type: String,
+        type: Boolean,
         default: false
     },
     creator: {
@@ -21,7 +21,7 @@ const schema = new Schema({
         }
     ]
 
-},
+}, 
     {
         timestamps: true
     }

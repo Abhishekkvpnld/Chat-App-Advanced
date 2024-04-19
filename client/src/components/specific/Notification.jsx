@@ -67,6 +67,7 @@ const NotificationItems = memo(({ sender, _id, handler }) => {
         alignItems={"center"}
         width={"100%"}
         spacing={"1rem"}
+        sx={{padding:"1rem",border:"1px solid black",borderRadius:"15px"}}
       >
         <Avatar src={avatar} />
         <Typography
@@ -88,8 +89,8 @@ const NotificationItems = memo(({ sender, _id, handler }) => {
           xs: "column",
           sm: "row"
         }}>
-          <Button onClick={() => handler({ _id, accept: true })} >Accept</Button>
-          <Button color="error" onClick={() => handler({ _id, accept: false })} >Reject</Button>
+          <Button sx={{ border: "1px solid green",borderRadius:"10px" }} onClick={() => handler({ _id, accept: true })} >Accept</Button>
+          <Button sx={{ border: "1px solid red",borderRadius:"10px",marginLeft:"5px"}} color="error" onClick={() => handler({ _id, accept: false })} >Reject</Button>
         </Stack>
 
       </Stack>

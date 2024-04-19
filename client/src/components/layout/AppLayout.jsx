@@ -41,7 +41,6 @@ const AppLayout = (WrappedComponent) => {
     const { user } = useSelector((state) => state.auth);
 
     const { isLoading, data, isError, error, refetch } = useMyChatsQuery("");
-    console.log("chats", data);
 
     useErrors([{ isError, error }]);
 
