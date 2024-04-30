@@ -60,7 +60,7 @@ app.use(cors(corsOptions));
 
 
 app.get("/", (req, res) => {
-    res.send("Hello")
+    res.send("server running")
 });
 
 app.use("/api/v1/user", userRoute);

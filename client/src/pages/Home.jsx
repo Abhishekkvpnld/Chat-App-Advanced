@@ -7,11 +7,11 @@ import { Search as SearchIcon } from "@mui/icons-material"
 
 const Home = () => {
   return (
-    <Box bgcolor={greyColor} height={"100%"}>
-      <img src={robot} alt="img" style={{ position: 'absolute' }} />
-      <Typography variant='h5' textAlign={"center"} style={{ paddingTop: "25rem" }} >
+    <Box bgcolor={greyColor} height={"100%"} display={"flex"} flexDirection={"column"} alignItems={"center"} justifyContent={"center"}>
+      <img src={robot} alt="img" width={"250px"} />
+      <Typography variant='h5' textAlign={"center"} >
         Select a friend to chat
-        <SearchIcon color='error'/> </Typography>
+        <SearchIcon color='success'/> </Typography>
     </Box>
   )
 }

@@ -5,7 +5,7 @@ import { setIsFileMenu, setIsLoadingLoader } from '../../../redux/reducers/misc'
 import { AudioFile as AudioFileIcon, Image as ImageIcon, UploadFile as UploadFileIcon, VideoFile as VideoFileIcon } from '@mui/icons-material';
 import toast from 'react-hot-toast';
 import { useSendAttachmentsMutation } from '../../../redux/api/api';
-import { color } from 'framer-motion';
+
 
 const FileMenu = ({ anchorE1, chatId }) => {
 
