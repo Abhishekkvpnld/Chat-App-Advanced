@@ -10,7 +10,7 @@ import cors from "cors";
 import { v2 as cloudinary } from "cloudinary";
 import { corsOptions } from "./constants/config.js";
 
-// import { createUser } from "./seeders/user.js";
+import { createUser } from "./seeders/user.js";
 // import { createGroupChat, createMessagesInAChat, createSingleChats, } from "./seeders/chat.js";
 
 //Routes
@@ -42,11 +42,13 @@ export const adminSecretKey = process.env.ADMIN_SECRET_KEY || "adminauthenticati
 export const userSocketIDs = new Map();
 export const onlineUsers = new Set();
 
+
+// createUser(10);
 // createSingleChats(10);
 // createGroupChat(10);
 // createMessagesInAChat("66019a90e0489af3e4f04bb2",50)
 
-
+ 
 const app = express(); 
 const server = http.createServer(app);
 const io = new Server(server, { cors: corsOptions });
