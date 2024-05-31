@@ -22,7 +22,7 @@ const ChatItem = (
         <Link
             to={`/chat/${_id}`}
             onContextMenu={(e) => handleDeleteChat(e, _id, groupChat)}
-            sx={{ padding: "0",backgroundColor:"#ffff","&:hover": {color:"white"} }}>
+            sx={{ padding: "0",backgroundColor:"#ffff",borderRadius:"8px","&:hover": {color:"white",backgroundColor:'lightseagreen'} }}>
 
             <motion.div
                 initial={{ opacity: 0, y: "-100%" }}

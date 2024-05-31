@@ -45,7 +45,7 @@ export const socketAuthenticator = async (err, socket, next) => {
         if (!authToken)
             next(new ErrorHandler("Please login to access this route", 401));
 
-        const decodedData = Jwt.verify(authToken, process.env.JWT_SECRET);
+        const decodedData = Jwt?.verify(authToken, process.env.JWT_SECRET);
 
         const user = await User.findById(decodedData._id);
 

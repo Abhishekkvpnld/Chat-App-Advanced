@@ -42,7 +42,7 @@ const ProfiileCard = ({ text, Icon, heading }) => (
 
         <Stack>
             <Typography variant='body2'>{text}</Typography>
-            <Typography color={"grey"} variant='caption'>{heading}</Typography>
+            <Typography color={"black"} variant='caption'>{heading}</Typography>
         </Stack>
 
     </Stack>)

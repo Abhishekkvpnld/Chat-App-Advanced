@@ -121,7 +121,12 @@ const Login = () => {
                             <form style={{ width: '100%', marginTop: "1rem" }} onSubmit={handleLogin}>
 
                                 <TextField required fullWidth label="Username" margin='normal' variant='outlined' value={username.value} onChange={username.changeHandler} />
-                                <TextField required fullWidth label="Password" type='password' margin='normal' variant='outlined' value={password.value} onChange={password.changeHandler} />
+                                <TextField required fullWidth label="Password" type='password' margin='normal' variant='outlined'  value={password.value } onChange={password.changeHandler} />
+                               {/* Demo user */}
+                               <Typography sx={{display:'flex',alignItems:"center",justifyContent:"center",color:"blue"}}>
+                                Demo username : user <br/>
+                                Password : User@123
+                               </Typography>
 
                                 <Button variant='contained' color='primary' type='submit' fullWidth sx={{ marginTop: "1rem" }} disabled={isLoading}>Login</Button>
 

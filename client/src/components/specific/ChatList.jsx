@@ -12,14 +12,14 @@ const ChatList = ({ w = "100%",
   return (
 
     <Stack width={w} direction={"column"}
-      sx={{ overflow: "auto",backgroundColor:"#e3e3e3"}}
+      sx={{ overflow: "auto",backgroundColor:"#e3e3e3",
+      boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.5)",      }}
       height={"100%"}
     >
 
       {
         chats?.map((chat, index) => {
           const { avatar, name, _id, groupChat, members } = chat;
-          console.log(groupChat);
 
           const newMessageAlert = newMessagesAlert.find(({ chatId }) => chatId === _id);
 
