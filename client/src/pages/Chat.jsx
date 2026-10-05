@@ -9,7 +9,7 @@ import React, {
 
 import AppLayout from "../components/layout/AppLayout";
 
-import { FileText, Send, Smile, UserRound } from "lucide-react";
+import { FileText, Phone, Send, Smile, UserRound, Video } from "lucide-react";
 import { motion } from "framer-motion";
 
 import FileMenu from "../components/dialogs/FileMenu";
@@ -275,7 +275,7 @@ const Chat = ({ chatId, user }) => {
       const messageForAlert = {
         content: data.message,
         sender: {
-          _id: "dsffsffgfgfdgggfg",
+          _id: "admin",
           name: "admin",
         },
         chat: chatId,
@@ -314,7 +314,7 @@ const Chat = ({ chatId, user }) => {
   // LOADING
   // =========================
 
-  if (chatDetails.isLoading) {
+  if (chatDetails?.isLoading) {
     return (
       <div className="flex h-full flex-col bg-white">
         {/* Header Skeleton */}
@@ -335,18 +335,16 @@ const Chat = ({ chatId, user }) => {
             return (
               <div
                 key={index}
-                className={`flex ${
-                  isRight
+                className={`flex ${isRight
                     ? "justify-end"
                     : "justify-start"
-                }`}
+                  }`}
               >
                 <div
-                  className={`h-10 animate-pulse rounded-2xl ${
-                    isRight
+                  className={`h-10 animate-pulse rounded-2xl ${isRight
                       ? "rounded-br-md bg-blue-100"
                       : "rounded-bl-md bg-slate-100"
-                  }`}
+                    }`}
                   style={{
                     width: `${120 + ((index * 37) % 160)}px`,
                   }}
@@ -372,81 +370,130 @@ const Chat = ({ chatId, user }) => {
     <Fragment>
       <div className="flex h-full min-h-0 flex-col bg-white">
 
+
         {/* =================================
-            CHAT HEADER
-        ================================= */}
+    CHAT HEADER
+================================= */}
         <header
           className="
-            flex
-            h-[68px]
-            shrink-0
-            items-center
-            gap-3
-            border-b
-            border-slate-100
-            bg-white/95
-            px-4
-            backdrop-blur
-            sm:px-5
-          "
+    flex
+    h-[68px]
+    shrink-0
+    items-center
+    gap-3
+    border-b
+    border-stone-100
+    bg-white/95
+    px-4
+    backdrop-blur
+    sm:px-5
+  "
         >
           {/* Avatar */}
           <div className="relative shrink-0">
             <div
               className="
-                flex
-                h-10
-                w-10
-                items-center
-                justify-center
-                overflow-hidden
-                rounded-full
-                bg-blue-50
-                text-blue-600
-              "
+        flex
+        h-10
+        w-10
+        items-center
+        justify-center
+        overflow-hidden
+        rounded-full
+        bg-stone-100
+        text-stone-600
+        ring-1
+        ring-stone-200
+      "
             >
               {chatDetails?.data?.chat?.avatar ? (
                 <img
                   src={chatDetails.data.chat.avatar}
                   alt={
-                    chatDetails?.data?.chat?.name ||
-                    "Chat"
+                    chatDetails?.data?.chat?.name || "Chat"
                   }
                   className="h-full w-full object-cover"
                 />
               ) : (
-                <UserRound size={20} />
+                <UserRound size={20} strokeWidth={1.8} />
               )}
             </div>
 
             {/* Online Indicator */}
             <span
               className="
-                absolute
-                bottom-0
-                right-0
-                h-2.5
-                w-2.5
-                rounded-full
-                border-2
-                border-white
-                bg-emerald-500
-              "
+        absolute
+        bottom-0
+        right-0
+        h-2.5
+        w-2.5
+        rounded-full
+        border-2
+        border-white
+        bg-emerald-500
+      "
             />
           </div>
 
           {/* Chat Information */}
           <div className="min-w-0 flex-1">
-            <h2 className="truncate text-sm font-semibold text-slate-800">
-              {chatDetails?.data?.chat?.name ||
+            <h2 className="truncate text-sm font-semibold text-stone-800">
+              {chatDetails?.data?.chat?.name?.split("-")[0] ||
                 "Conversation"}
             </h2>
 
-            <p className="truncate text-xs text-slate-400">
-              {userTyping
-                ? "Typing..."
-                : "Active conversation"}
+            <p className="truncate text-xs text-stone-400">
+              {userTyping ? "Typing..." : "Active conversation"}
             </p>
+          </div>
+
+          {/* Call Actions */}
+          <div className="flex shrink-0 items-center gap-1">
+            {/* Phone Call */}
+            <button
+              type="button"
+              className="
+        flex
+        h-9
+        w-9
+        items-center
+        justify-center
+        rounded-xl
+        text-stone-500
+        transition-all
+        duration-200
+        hover:bg-stone-100
+        hover:text-stone-900
+        active:scale-95
+        cursor-pointer
+      "
+              aria-label="Start voice call"
+            >
+              <Phone size={18} strokeWidth={1.8} />
+            </button>
+
+            {/* Video Call */}
+            <button
+              type="button"
+              className="
+              cursor-pointer
+        flex
+        h-9
+        w-9
+        items-center
+        justify-center
+        rounded-xl
+        text-stone-500
+        transition-all
+        duration-200
+        hover:bg-stone-100
+        hover:text-stone-900
+        active:scale-95
+      "
+              aria-label="Start video call"
+            >
+              <Video size={18} strokeWidth={1.8} />
+            </button>
           </div>
         </header>
 
@@ -464,7 +511,7 @@ const Chat = ({ chatId, user }) => {
             gap-3
             overflow-x-hidden
             overflow-y-auto
-            bg-slate-50
+            
             px-3
             py-4
             sm:px-5

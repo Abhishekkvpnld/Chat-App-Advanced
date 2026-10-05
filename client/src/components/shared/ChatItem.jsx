@@ -51,7 +51,7 @@ const ChatItem = ({
 
           ${
             sameSender
-              ? "bg-blue-600 text-white shadow-md shadow-blue-100"
+              ? "bg-green-700 text-white shadow-md shadow-blue-100"
               : "text-slate-700 hover:bg-slate-50 hover:shadow-sm"
           }
         `}
