@@ -1,11 +1,11 @@
 import { Box, Drawer, Grid, IconButton, Stack, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { greyColor, matBlack } from '../../constants/color';
 import { Menu as MenuIcon, Close as CloseIcon, Group as GroupIcon, ManageAccounts as ManageAccountsIcon, Message as MessageIcon, ExitToApp as ExitToAppIcon } from "@mui/icons-material";
 import { useLocation, Link as LinkComponent, Navigate } from "react-router-dom";
 import { Dashboard as DashboardIcon } from "@mui/icons-material";
 import { styled } from '@mui/material';
-import { useSelector,useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { adminLogout } from '../../../redux/thunks/admin';
 
 
@@ -51,7 +51,7 @@ const Sidebar = ({ w = "100%" }) => {
     const location = useLocation();
 
     const handleLogout = () => {
-       dispatch(adminLogout())
+        dispatch(adminLogout())
     };
 
     return (

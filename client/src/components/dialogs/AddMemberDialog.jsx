@@ -1,5 +1,5 @@
 import { Button, Dialog, DialogTitle, Stack, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import UserItem from "../shared/userItem";
 import { useAsyncMutation, useErrors } from '../../hooks/hook';
 import { useAddGroupMembersMutation, useAvailableFriendsQuery } from '../../../redux/api/api';

@@ -23,7 +23,7 @@ export const adminLogin = createAsyncThunk("admin/login", async (secretKey) => {
         return data.message;
     } catch (error) {
         throw error.response.data.message;
-    };
+    }
 
 });
 
@@ -36,7 +36,7 @@ export const getAdmin = createAsyncThunk("admin/getAdmin", async () => {
         return data.admin;
     } catch (error) {
         throw error.response.data.message;
-    };
+    }
 });
 
 
@@ -48,5 +48,5 @@ export const adminLogout = createAsyncThunk("admin/logout", async () => {
         return data.message;
     } catch (error) {
         throw error.response.data.message;
-    };
+    }
 });

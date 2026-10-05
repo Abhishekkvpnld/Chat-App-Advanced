@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Button, Container, Paper, TextField, Typography } from "@mui/material";
 import { useInputValidation } from '6pp';
 import { Navigate } from 'react-router-dom';

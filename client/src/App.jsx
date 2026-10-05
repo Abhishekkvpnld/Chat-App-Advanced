@@ -1,3 +1,4 @@
+import "./index.css";
 import React, { Suspense, lazy, useEffect } from 'react';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ProtectRoute from './components/auth/ProtectRoute';
@@ -7,7 +8,7 @@ import { server } from './constants/config';
 import { useDispatch, useSelector } from "react-redux";
 import { userExists, userNotExists } from '../redux/reducers/auth';
 import { Toaster } from "react-hot-toast";
-import {SocketProvider} from "./socket";
+import { SocketProvider } from "./socket";
 
 const Home = lazy(() => import("./pages/Home"));
 const Login = lazy(() => import("./pages/Login"));
@@ -32,11 +33,11 @@ function App() {
   useEffect(() => {
 
     axios.get(`${server}/api/v1/user/profile`, { withCredentials: true })
-    .then(({ data }) =>
-      dispatch(userExists(data.user))
-    ).catch((err) =>
-      dispatch(userNotExists())
-    );
+      .then(({ data }) =>
+        dispatch(userExists(data.user))
+      ).catch(() =>
+        dispatch(userNotExists())
+      );
 
   }, [dispatch]);
 
@@ -65,6 +66,6 @@ function App() {
       <Toaster position='bottom-right' />
     </BrowserRouter>
   );
-};
+}
 
 export default App;

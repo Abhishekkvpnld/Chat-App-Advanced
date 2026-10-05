@@ -36,7 +36,7 @@ const chatSlice = createSlice({
                     chatId,
                     count: 1
                 });
-            };
+            }
         },
 
         removeNewMessageAlert: (state, action) => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import AdminLayout from '../../components/layout/AdminLayout';
 import Table from '../../components/shared/Table';
 import { Avatar, Stack } from '@mui/material';
@@ -99,7 +99,7 @@ const ChatManagement = () => {
         avatar: transformImage(i.creator.avatar, 50)
       }
     })));
-   };
+   }
   }, [data])
 
   return (
