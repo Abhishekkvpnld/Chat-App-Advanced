@@ -160,6 +160,48 @@ io.on("connection", (socket) => {
     io.to(membersSocket).emit(ONLINE_USERS, Array.from(onlineUsers));
   });
 
+  // =========================
+  // CALL SIGNALING EVENTS
+  // =========================
+  socket.on("CALL_USER", ({ to, signal, callType, callerInfo }) => {
+    const receiverSocketId = userSocketIDs.get(to?.toString());
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("INCOMING_CALL", {
+        from: user._id.toString(),
+        signal,
+        callType,
+        callerInfo: {
+          name: user.name,
+          avatar: user.avatar?.url || callerInfo?.avatar || "",
+          ...callerInfo,
+        },
+      });
+    } else {
+      socket.emit("CALL_REJECTED", { reason: "User is offline" });
+    }
+  });
+
+  socket.on("CALL_ACCEPTED", ({ to, signal }) => {
+    const callerSocketId = userSocketIDs.get(to?.toString());
+    if (callerSocketId) {
+      io.to(callerSocketId).emit("CALL_ACCEPTED", { signal });
+    }
+  });
+
+  socket.on("CALL_REJECTED", ({ to }) => {
+    const callerSocketId = userSocketIDs.get(to?.toString());
+    if (callerSocketId) {
+      io.to(callerSocketId).emit("CALL_REJECTED");
+    }
+  });
+
+  socket.on("CALL_ENDED", ({ to }) => {
+    const targetSocketId = userSocketIDs.get(to?.toString());
+    if (targetSocketId) {
+      io.to(targetSocketId).emit("CALL_ENDED");
+    }
+  });
+
   socket.on("disconnect", () => {
     userSocketIDs.delete(user._id.toString());
     onlineUsers.delete(user._id.toString());

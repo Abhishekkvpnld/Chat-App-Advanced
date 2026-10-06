@@ -3,9 +3,11 @@ import React, {
   Fragment,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
+import toast from "react-hot-toast";
 
 import AppLayout from "../components/layout/AppLayout";
 
@@ -52,6 +54,11 @@ import { TypingLoader } from "../components/layout/LayoutLoader";
 
 import { useNavigate } from "react-router-dom";
 
+import { useCall } from "../hooks/useCall";
+import IncomingCallDialog from "../components/call/IncomingCallDialog";
+import CallScreen from "../components/call/CallScreen";
+import CallButtons from "../components/call/CallButtons";
+
 const Chat = ({ chatId, user }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -70,6 +77,19 @@ const Chat = ({ chatId, user }) => {
 
   const [IamTyping, setIamTyping] = useState(false);
   const [userTyping, setUserTyping] = useState(false);
+
+  // =========================
+  // CALL SETUP
+  // =========================
+
+  const {
+    callState,
+    callUser,
+    answerCall,
+    endCall,
+    myVideoRef,
+    remoteVideoRef,
+  } = useCall(socket);
 
   // =========================
   // API
@@ -108,6 +128,52 @@ const Chat = ({ chatId, user }) => {
   );
 
   const members = chatDetails?.data?.chat?.members;
+
+  // Safely derive the other member (handles array of ID strings, ObjectIds, or populated member objects)
+  const otherMember = useMemo(() => {
+    if (!members || !user?._id) return null;
+    return members.find((m) => {
+      const memberId = typeof m === "object" && m !== null ? (m._id || m) : m;
+      return memberId?.toString() !== user._id.toString();
+    });
+  }, [members, user?._id]);
+
+  const otherMemberId = useMemo(() => {
+    if (!otherMember) return null;
+    return typeof otherMember === "object" && otherMember !== null && otherMember._id
+      ? otherMember._id.toString()
+      : otherMember.toString();
+  }, [otherMember]);
+
+  const handleVoiceCall = () => {
+    if (chatDetails?.data?.chat?.groupChat) {
+      toast.error("Voice calls are only supported in 1-on-1 chats");
+      return;
+    }
+    if (!otherMemberId) {
+      toast.error("Contact details not ready yet");
+      return;
+    }
+    callUser(otherMemberId, "audio", {
+      name: user?.name,
+      avatar: user?.avatar?.url || "",
+    });
+  };
+
+  const handleVideoCall = () => {
+    if (chatDetails?.data?.chat?.groupChat) {
+      toast.error("Video calls are only supported in 1-on-1 chats");
+      return;
+    }
+    if (!otherMemberId) {
+      toast.error("Contact details not ready yet");
+      return;
+    }
+    callUser(otherMemberId, "video", {
+      name: user?.name,
+      avatar: user?.avatar?.url || "",
+    });
+  };
 
   // =========================
   // TYPING
@@ -447,54 +513,18 @@ const Chat = ({ chatId, user }) => {
             </p>
           </div>
 
-          {/* Call Actions */}
-          <div className="flex shrink-0 items-center gap-1">
-            {/* Phone Call */}
-            <button
-              type="button"
-              className="
-        flex
-        h-9
-        w-9
-        items-center
-        justify-center
-        rounded-xl
-        text-stone-500
-        transition-all
-        duration-200
-        hover:bg-stone-100
-        hover:text-stone-900
-        active:scale-95
-        cursor-pointer
-      "
-              aria-label="Start voice call"
-            >
-              <Phone size={18} strokeWidth={1.8} />
-            </button>
-
-            {/* Video Call */}
-            <button
-              type="button"
-              className="
-              cursor-pointer
-        flex
-        h-9
-        w-9
-        items-center
-        justify-center
-        rounded-xl
-        text-stone-500
-        transition-all
-        duration-200
-        hover:bg-stone-100
-        hover:text-stone-900
-        active:scale-95
-      "
-              aria-label="Start video call"
-            >
-              <Video size={18} strokeWidth={1.8} />
-            </button>
-          </div>
+          {/* Call Actions (1-on-1 chats) */}
+          {!chatDetails?.data?.chat?.groupChat && (
+            <CallButtons
+              onVoiceCall={handleVoiceCall}
+              onVideoCall={handleVideoCall}
+              disabled={
+                !otherMemberId ||
+                callState?.isCalling ||
+                callState?.callActive
+              }
+            />
+          )}
         </header>
 
         {/* =================================
@@ -716,6 +746,31 @@ const Chat = ({ chatId, user }) => {
       <FileMenu
         anchorE1={fileMenuAnchor}
         chatId={chatId}
+      />
+
+      {/* Incoming call notification */}
+      <IncomingCallDialog
+        callState={callState}
+        onAnswer={answerCall}
+        onReject={() => endCall(callState.caller?.id)}
+      />
+
+      {/* Call modal dialog */}
+      <CallScreen
+        callState={callState}
+        myVideoRef={myVideoRef}
+        remoteVideoRef={remoteVideoRef}
+        onEndCall={() => endCall(otherMemberId)}
+        contactName={
+          callState.caller?.name ||
+          chatDetails?.data?.chat?.name?.split("-")[0] ||
+          "User"
+        }
+        contactAvatar={
+          callState.caller?.avatar ||
+          chatDetails?.data?.chat?.avatar ||
+          ""
+        }
       />
     </Fragment>
   );
