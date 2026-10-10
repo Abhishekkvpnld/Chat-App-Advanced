@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   PhoneOff,
@@ -7,6 +7,7 @@ import {
   Video,
   VideoOff,
   UserRound,
+  Clock,
 } from "lucide-react";
 
 const CallScreen = ({
@@ -19,10 +20,44 @@ const CallScreen = ({
 }) => {
   const [micOn, setMicOn] = useState(true);
   const [camOn, setCamOn] = useState(callState.callType === "video");
+  const [duration, setDuration] = useState(0);
 
   const isVideo = callState.callType === "video";
   const isCalling = callState.isCalling && !callState.callActive;
   const isActive = callState.callActive;
+
+  // ── Call Timer ─────────────────────────────────────────────────────────────
+  useEffect(() => {
+    let timer;
+    if (isActive) {
+      setDuration(0);
+      timer = setInterval(() => {
+        setDuration((prev) => prev + 1);
+      }, 1000);
+    } else {
+      setDuration(0);
+    }
+
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [isActive]);
+
+  const formatDuration = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    const hrs = Math.floor(mins / 60);
+    const remMins = mins % 60;
+
+    if (hrs > 0) {
+      return `${hrs.toString().padStart(2, "0")}:${remMins
+        .toString()
+        .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+    }
+    return `${mins.toString().padStart(2, "0")}:${secs
+      .toString()
+      .padStart(2, "0")}`;
+  };
 
   const toggleMic = () => {
     const stream = myVideoRef.current?.srcObject;
@@ -166,9 +201,15 @@ const CallScreen = ({
                     <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
                     <span className="text-xs font-medium text-white">{displayName}</span>
                   </div>
-                  <span className="text-xs font-medium text-stone-300 bg-black/40 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
-                    Video Call
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5 text-xs font-mono font-semibold text-emerald-400 bg-black/40 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 shadow-inner">
+                      <Clock size={13} className="text-emerald-400" />
+                      <span>{formatDuration(duration)}</span>
+                    </div>
+                    <span className="text-xs font-medium text-stone-300 bg-black/40 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
+                      Video Call
+                    </span>
+                  </div>
                 </div>
 
                 {/* Picture-in-Picture Local Video */}
@@ -243,9 +284,14 @@ const CallScreen = ({
                 {/* Audio stream element for voice call */}
                 <audio ref={remoteVideoRef} autoPlay playsInline className="hidden" />
                 {/* Top Status */}
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-medium text-emerald-400 mb-6">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-medium text-emerald-400 mb-6 shadow-xs">
                   <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                  <span>Connected • Voice Call</span>
+                  <span>Voice Call</span>
+                  <span className="h-3 w-[1px] bg-emerald-500/30" />
+                  <div className="flex items-center gap-1 font-mono font-semibold text-white">
+                    <Clock size={12} className="text-emerald-400" />
+                    <span>{formatDuration(duration)}</span>
+                  </div>
                 </div>
 
                 {/* Avatar with pulsing halo */}
