@@ -8,6 +8,7 @@ import React, {
   useState,
 } from "react";
 import toast from "react-hot-toast";
+import EmojiPicker from "emoji-picker-react";
 
 import AppLayout from "../components/layout/AppLayout";
 
@@ -18,7 +19,7 @@ import FileMenu from "../components/dialogs/FileMenu";
 import MessageComponent from "../components/shared/MessageComponent";
 
 import { getSocket } from "../socket";
-import { NEW_MESSAGE } from "../../../server/constants/events";
+import { NEW_MESSAGE } from "../constants/events";
 
 import {
   useChatDetailsQuery,
@@ -77,6 +78,12 @@ const Chat = ({ chatId, user }) => {
 
   const [IamTyping, setIamTyping] = useState(false);
   const [userTyping, setUserTyping] = useState(false);
+
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
+  const handleEmojiClick = (emojiData) => {
+    setMessage((prev) => prev + emojiData.emoji);
+  };
 
   // =========================
   // CALL SETUP
@@ -144,6 +151,8 @@ const Chat = ({ chatId, user }) => {
       ? otherMember._id.toString()
       : otherMember.toString();
   }, [otherMember]);
+
+
 
   const handleVoiceCall = () => {
     if (chatDetails?.data?.chat?.groupChat) {
@@ -234,6 +243,7 @@ const Chat = ({ chatId, user }) => {
     });
 
     setMessage("");
+    setShowEmojiPicker(false);
 
     if (typingTimeout.current) {
       clearTimeout(typingTimeout.current);
@@ -356,12 +366,15 @@ const Chat = ({ chatId, user }) => {
     [chatId]
   );
 
-  const eventHandler = {
-    [ALERT]: alertListener,
-    [NEW_MESSAGE]: newMessageHandler,
-    [START_TYPING]: startTypingListener,
-    [STOP_TYPING]: stopTypingListener,
-  };
+  const eventHandler = useMemo(
+    () => ({
+      [ALERT]: alertListener,
+      [NEW_MESSAGE]: newMessageHandler,
+      [START_TYPING]: startTypingListener,
+      [STOP_TYPING]: stopTypingListener,
+    }),
+    [alertListener, newMessageHandler, startTypingListener, stopTypingListener]
+  );
 
   useSocketEvents(socket, eventHandler);
 
@@ -402,14 +415,14 @@ const Chat = ({ chatId, user }) => {
               <div
                 key={index}
                 className={`flex ${isRight
-                    ? "justify-end"
-                    : "justify-start"
+                  ? "justify-end"
+                  : "justify-start"
                   }`}
               >
                 <div
                   className={`h-10 animate-pulse rounded-2xl ${isRight
-                      ? "rounded-br-md bg-blue-100"
-                      : "rounded-bl-md bg-slate-100"
+                    ? "rounded-br-md bg-blue-100"
+                    : "rounded-bl-md bg-slate-100"
                     }`}
                   style={{
                     width: `${120 + ((index * 37) % 160)}px`,
@@ -678,27 +691,39 @@ const Chat = ({ chatId, user }) => {
             />
 
             {/* Emoji */}
-            <motion.button
-              type="button"
-              whileTap={{ scale: 0.9 }}
-              className="
-                hidden
-                h-10
-                w-10
-                shrink-0
-                items-center
-                justify-center
-                rounded-xl
-                text-slate-400
-                transition
-                hover:bg-blue-50
-                hover:text-blue-600
-                sm:flex
-              "
-              aria-label="Add emoji"
-            >
-              <Smile size={19} />
-            </motion.button>
+            <div className="relative shrink-0">
+              <motion.button
+                type="button"
+                whileTap={{ scale: 0.9 }}
+                onClick={() => setShowEmojiPicker((prev) => !prev)}
+                className="
+                  flex
+                  h-10
+                  w-10
+                  items-center
+                  justify-center
+                  rounded-xl
+                  text-slate-400
+                  transition
+                  hover:bg-blue-50
+                  hover:text-blue-600
+                "
+                aria-label="Add emoji"
+              >
+                <Smile size={19} />
+              </motion.button>
+
+              {/* Emoji Picker Popup Overlay */}
+              {showEmojiPicker && (
+                <div className="absolute bottom-12 right-0 z-50 shadow-2xl rounded-2xl overflow-hidden border border-slate-200">
+                  <EmojiPicker
+                    onEmojiClick={handleEmojiClick}
+                    width={320}
+                    height={400}
+                  />
+                </div>
+              )}
+            </div>
 
             {/* Send */}
             <motion.button

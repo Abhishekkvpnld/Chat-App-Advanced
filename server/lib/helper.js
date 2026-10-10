@@ -7,7 +7,13 @@ export const getOtherMember = (members, userId) =>
 
 
 export const getSockets = (users = []) => {
-    const sockets = users.map((user) => userSocketIDs.get(user.toString()));
+    const sockets = users
+        .map((user) => {
+            const id = typeof user === "object" && user !== null ? (user._id || user) : user;
+            return userSocketIDs.get(id?.toString());
+        })
+        .filter((socketId) => Boolean(socketId));
+        
     return sockets;
 };
 
