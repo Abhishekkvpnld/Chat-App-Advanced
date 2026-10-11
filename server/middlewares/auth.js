@@ -5,6 +5,8 @@ import { tryCatch } from "./error.js";
 import { chatToken } from "../constants/config.js";
 import { User } from "../models/userModel.js";
 
+
+
 export const isAuthenticated = tryCatch(async (req, res, next) => {
   const token = req.cookies[chatToken];
 
@@ -12,11 +14,11 @@ export const isAuthenticated = tryCatch(async (req, res, next) => {
     return next(new ErrorHandler("Please login to access this route", 401));
 
   const decodedData = Jwt.verify(token, process.env.JWT_SECRET);
-
   req.user = decodedData._id;
 
   next();
 });
+
 
 export const adminOnly = async (req, res, next) => {
   const token = req.cookies["chat-admin-token"];
@@ -25,7 +27,6 @@ export const adminOnly = async (req, res, next) => {
     return next(new ErrorHandler("Only Admin Can Access This Route", 401));
 
   const secretKey = Jwt.verify(token, process.env.JWT_SECRET);
-
   const isMatched = secretKey === adminSecretKey;
 
   if (!isMatched)
@@ -33,6 +34,7 @@ export const adminOnly = async (req, res, next) => {
 
   next();
 };
+
 
 export const socketAuthenticator = async (err, socket, next) => {
   try {
@@ -44,7 +46,6 @@ export const socketAuthenticator = async (err, socket, next) => {
       next(new ErrorHandler("Please login to access this route", 401));
 
     const decodedData = Jwt?.verify(authToken, process.env.JWT_SECRET);
-
     const user = await User.findById(decodedData._id);
 
     if (!user) next(new ErrorHandler("Please login to access this route", 401));
