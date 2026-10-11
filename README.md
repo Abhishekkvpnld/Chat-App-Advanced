@@ -1,4 +1,4 @@
-# 💬 ChitChat - Advanced Real-Time Chat & Video Calling Platform
+# 💬 Connect - Advanced Real-Time Chat & Video Calling Platform
 
 <p align="center">
   <img src="client/src/icon.jpg" alt="ChitChat Logo" width="120" style="border-radius: 20%;" />
